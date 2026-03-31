@@ -56,14 +56,11 @@ tailwind.config = {
 
 <!-- ══════════════ SIDEBAR ══════════════ -->
 <aside class="flex flex-col h-screen fixed left-0 top-0 z-40 w-64 bg-slate-50 font-['Inter'] text-sm font-medium tracking-tight">
-  <div class="p-8">
-    <div class="flex items-center gap-3 mb-10">
-      <img src="/logo/VC_Logo.png" alt="Vantage Circle" class="w-14 h-14 rounded-lg object-contain"/>
-      <div>
-        <div class="font-['Manrope'] text-[10px] font-semibold text-on-surface-variant/70 uppercase tracking-widest leading-none mb-0.5">Vantage Circle</div>
-        <div class="font-['Manrope'] text-lg font-bold text-indigo-950 leading-tight">GRC Ledger</div>
-      </div>
-    </div>
+  <div class="flex flex-col items-start justify-center h-16 px-8 border-b border-slate-200 mb-6">
+    <div class="font-['Manrope'] text-xs font-bold tracking-widest uppercase leading-none mb-1" style="color:#3D3D5C">Vantage Circle</div>
+    <div class="font-['Manrope'] text-base font-extrabold leading-none tracking-tight" style="color:#3D3D5C">GRC Command Center</div>
+  </div>
+  <div class="px-8 flex-1 overflow-y-auto">
     <nav class="space-y-1">
       <a class="nav-link active flex items-center gap-3 px-4 py-3" href="#" data-page="dashboard"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
       <a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-700 hover:bg-slate-100" href="#" data-page="policies"><span class="material-symbols-outlined">policy</span><span>Policies</span></a>
@@ -90,6 +87,7 @@ tailwind.config = {
       </button>
     </div>
   </div>
+  </div>
 </aside>
 
 <!-- ══════════════ TOP NAV ══════════════ -->
@@ -109,7 +107,7 @@ tailwind.config = {
       <button class="hover:text-indigo-600 transition-colors" onclick="openModal('help-modal')"><span class="material-symbols-outlined">help_outline</span></button>
     </div>
     <div class="h-8 w-[1px] bg-slate-200"></div>
-    <h1 id="page-title" class="font-['Manrope'] font-semibold text-lg text-indigo-900">Dashboard</h1>
+    <h1 id="page-title" class="font-['Manrope'] font-semibold text-lg text-indigo-900">GRC Command Center</h1>
   </div>
 </header>
 
@@ -187,7 +185,7 @@ tailwind.config = {
     </div>
     <div class="bg-surface-container-lowest rounded-lg shadow-sm overflow-hidden">
       <div class="grid grid-cols-12 px-6 py-3 bg-surface-container-low text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
-        <div class="col-span-5">Policy Name</div><div class="col-span-2">Category</div><div class="col-span-2">Last Updated</div><div class="col-span-2">Status</div><div class="col-span-1"></div>
+        <div class="col-span-4">Policy Name</div><div class="col-span-2">Category</div><div class="col-span-2">Last Updated</div><div class="col-span-2">Status</div><div class="col-span-2 admin-only" style="display:none">Actions</div>
       </div>
       <div id="policy-table"></div>
     </div>
@@ -242,6 +240,20 @@ tailwind.config = {
 
 <!-- ══════════════ MODALS ══════════════ -->
 <!-- Certificate detail -->
+<!-- PDF Preview Modal -->
+<div id="pdf-preview-modal" class="modal-overlay" onclick="closeModalOutside(event,'pdf-preview-modal')" style="z-index:300">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl flex flex-col" style="width:90vw;max-width:960px;height:90vh;">
+    <div class="flex justify-between items-center px-6 py-4 border-b border-outline-variant/20 flex-shrink-0">
+      <h3 id="preview-title" class="font-bold text-on-surface text-base"></h3>
+      <div class="flex items-center gap-3">
+        <a id="preview-download" href="#" download class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:brightness-110 flex items-center gap-2"><span class="material-symbols-outlined text-sm">download</span>Download</a>
+        <button onclick="closeModal('pdf-preview-modal')"><span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">close</span></button>
+      </div>
+    </div>
+    <iframe id="preview-frame" src="" class="flex-1 w-full rounded-b-2xl" style="border:none;"></iframe>
+  </div>
+</div>
+
 <div id="cert-modal" class="modal-overlay" onclick="closeModalOutside(event,'cert-modal')">
   <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
     <div class="flex justify-between items-start mb-6">
@@ -257,7 +269,8 @@ tailwind.config = {
       <div class="flex justify-between"><span>Certifying Body</span><span id="cm-body" class="font-semibold text-on-surface"></span></div>
     </div>
     <div class="flex gap-3">
-      <a id="cm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download Certificate</a>
+      <button id="cm-preview" onclick="openPdfPreview('cm')" class="flex-1 py-2.5 bg-secondary-container text-on-secondary-container text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">visibility</span>Preview</button>
+      <a id="cm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">download</span>Download</a>
       <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
       <button onclick="closeModal('cert-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
     </div>
@@ -276,7 +289,8 @@ tailwind.config = {
     <span id="pm-status" class="inline-block px-3 py-1 text-xs font-bold rounded-full uppercase mb-5"></span>
     <p id="pm-desc" class="text-sm text-on-surface-variant leading-relaxed mb-6"></p>
     <div class="flex gap-3">
-      <a id="pm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download</a>
+      <button id="pm-preview" onclick="openPdfPreview('pm')" class="flex-1 py-2.5 bg-secondary-container text-on-secondary-container text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">visibility</span>Preview</button>
+      <a id="pm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">download</span>Download</a>
       <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
       <button onclick="closeModal('policy-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
     </div>
@@ -294,7 +308,8 @@ tailwind.config = {
     <p id="rm-sub" class="text-xs text-on-surface-variant mb-5"></p>
     <p id="rm-desc" class="text-sm text-on-surface-variant leading-relaxed mb-6"></p>
     <div class="flex gap-3">
-      <a id="rm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download Report</a>
+      <button id="rm-preview" onclick="openPdfPreview('rm')" class="flex-1 py-2.5 bg-secondary-container text-on-secondary-container text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">visibility</span>Preview</button>
+      <a id="rm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">download</span>Download</a>
       <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
       <button onclick="closeModal('report-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
     </div>
@@ -312,7 +327,8 @@ tailwind.config = {
     <p id="vm-sub" class="text-xs text-on-surface-variant mb-4"></p>
     <p id="vm-desc" class="text-sm text-on-surface-variant leading-relaxed mb-6"></p>
     <div class="flex gap-3">
-      <a id="vm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download PDF Report</a>
+      <button id="vm-preview" onclick="openPdfPreview('vm')" class="flex-1 py-2.5 bg-secondary-container text-on-secondary-container text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">visibility</span>Preview</button>
+      <a id="vm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">download</span>Download</a>
       <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
       <button onclick="closeModal('vapt-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
     </div>
@@ -341,14 +357,44 @@ tailwind.config = {
   <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
     <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary font-headline">New Policy</h3><button onclick="closeModal('new-policy-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button></div>
     <div class="space-y-4 mb-6">
-      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Policy Name</label><input id="new-policy-name" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Remote Work Security Policy"/></div>
-      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Category</label><select id="new-policy-cat" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none"><option>Security</option><option>Privacy</option><option>HR</option><option>IT</option><option>Risk</option><option>Operations</option></select></div>
-      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Description</label><textarea id="new-policy-desc" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none resize-none" rows="2" placeholder="Brief description of this policy…"></textarea></div>
-      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">PDF Document</label><input id="new-policy-file" type="file" accept=".pdf" class="w-full bg-surface-container-high border-none rounded text-sm py-2 px-3 outline-none text-on-surface-variant"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Policy Name <span class="text-error">*</span></label><input id="new-policy-name" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Remote Work Security Policy"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Category <span class="text-error">*</span></label><select id="new-policy-cat" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none"><option>Security</option><option>Privacy</option><option>HR</option><option>IT</option><option>Risk</option><option>Operations</option></select></div>
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Description <span class="text-error">*</span></label>
+          <span id="new-policy-desc-count" class="text-[10px] text-on-surface-variant">0 / 500</span>
+        </div>
+        <textarea id="new-policy-desc" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none resize-none" rows="3" maxlength="500" placeholder="Brief description of this policy…" oninput="document.getElementById('new-policy-desc-count').textContent=this.value.length+' / 500'"></textarea>
+      </div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">PDF Document <span class="text-error">*</span></label><input id="new-policy-file" type="file" accept=".pdf" class="w-full bg-surface-container-high border-none rounded text-sm py-2 px-3 outline-none text-on-surface-variant"/></div>
     </div>
     <div class="flex gap-3">
       <button onclick="addNewPolicy()" class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110">Create Policy</button>
       <button onclick="closeModal('new-policy-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Policy Modal -->
+<div id="edit-policy-modal" class="modal-overlay" onclick="closeModalOutside(event,'edit-policy-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
+    <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary font-headline">Edit Policy</h3><button onclick="closeModal('edit-policy-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button></div>
+    <input type="hidden" id="edit-policy-id"/>
+    <div class="space-y-4 mb-6">
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Policy Name <span class="text-error">*</span></label><input id="edit-policy-name" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Category <span class="text-error">*</span></label><select id="edit-policy-cat" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none"><option>Security</option><option>Privacy</option><option>HR</option><option>IT</option><option>Risk</option><option>Operations</option></select></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Status <span class="text-error">*</span></label><select id="edit-policy-status" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none"><option>Published</option><option>Under Review</option><option>Draft</option></select></div>
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Description <span class="text-error">*</span></label>
+          <span id="edit-policy-desc-count" class="text-[10px] text-on-surface-variant">0 / 500</span>
+        </div>
+        <textarea id="edit-policy-desc" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none resize-none" rows="3" maxlength="500" oninput="document.getElementById('edit-policy-desc-count').textContent=this.value.length+' / 500'"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="saveEditPolicy()" class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110">Save Changes</button>
+      <button onclick="closeModal('edit-policy-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md">Cancel</button>
     </div>
   </div>
 </div>
@@ -406,7 +452,7 @@ tailwind.config = {
     <div class="mb-6">
       <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-primary text-base">menu_book</span><h4 class="font-bold text-sm text-on-surface">Documentation</h4></div>
       <div class="bg-surface-container-low rounded-xl p-4 text-sm text-on-surface-variant space-y-3 leading-relaxed">
-        <p>The Vantage Circle GRC Ledger is a centralized Governance, Risk and Compliance dashboard built to provide transparent and accessible oversight of Vantage Circle's security posture, compliance certifications, and policy framework.</p>
+        <p>The Vantage Circle GRC Command Center is a centralized Governance, Risk and Compliance dashboard built to provide transparent and accessible oversight of Vantage Circle's security posture, compliance certifications, and policy framework.</p>
         <p>This dashboard is intended for use by employees, clients, and external stakeholders. It offers a single organized view of all governance documentation and does not require a login to view or download any content.</p>
         <p class="font-semibold text-on-surface text-xs uppercase tracking-wider pt-1">What you can find here</p>
         <p><span class="font-medium text-on-surface">Policy Library.</span> All active, under review, and draft organizational policies covering information security, data privacy, human resources, and operations.</p>
@@ -558,7 +604,7 @@ function renderPolicyTable(filter='all') {
   document.getElementById('policy-table').innerHTML = filtered.map((p, i) =>
     `<div onclick="openPolicyModal(${p.id})"
       class="grid grid-cols-12 px-6 py-4 hover:bg-surface-container-low transition-all cursor-pointer ${i < filtered.length-1 ? 'border-b border-outline-variant/10' : ''}">
-      <div class="col-span-5 flex items-center gap-3">
+      <div class="col-span-4 flex items-center gap-3">
         <div class="w-8 h-8 bg-primary-container/10 flex items-center justify-center rounded text-primary">
           <span class="material-symbols-outlined text-sm">${p.icon}</span></div>
         <span class="font-semibold text-sm">${p.name}</span></div>
@@ -566,8 +612,9 @@ function renderPolicyTable(filter='all') {
       <div class="col-span-2 flex items-center text-xs text-on-surface-variant">${p.updated}</div>
       <div class="col-span-2 flex items-center">
         <span class="px-2.5 py-1 ${statusBadge(p.status)} text-[9px] font-bold rounded-full uppercase">${p.status}</span></div>
-      <div class="col-span-1 flex items-center justify-end gap-1">
-        <button class="admin-only text-on-surface-variant/30 hover:text-error transition-colors" style="display:none" onclick="event.stopPropagation();deleteItem('policies',${p.id},'${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-outlined text-sm">delete</span></button>
+      <div class="col-span-2 admin-only flex items-center gap-2" style="display:none">
+        <button class="flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold bg-primary-container/20 text-primary rounded hover:bg-primary-container/40 transition-colors" onclick="event.stopPropagation();openEditPolicyModal(${p.id})"><span class="material-symbols-outlined text-xs">edit</span>Edit</button>
+        <button class="flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold bg-error-container/20 text-error rounded hover:bg-error-container/40 transition-colors" onclick="event.stopPropagation();deleteItem('policies',${p.id},'${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-outlined text-xs">delete</span>Delete</button>
       </div>
     </div>`
   ).join('') || '<div class="px-6 py-8 text-center text-sm text-on-surface-variant">No policies match this filter.</div>';
@@ -669,6 +716,24 @@ function renderDashCounts() {
 
 // ── Module-level current item tracker
 let currentItem = null;
+
+// ── PDF Preview
+function openPdfPreview(prefix) {
+  const dlEl = document.getElementById(prefix + '-download');
+  const url = dlEl ? dlEl.getAttribute('href') : '';
+  if (!url || url === '#') { showToast('No PDF available to preview'); return; }
+  const titleEl = document.getElementById(
+    prefix === 'pm' ? 'pm-title' :
+    prefix === 'rm' ? 'rm-title' :
+    prefix === 'vm' ? 'vm-title' :
+    'cm-name'
+  );
+  document.getElementById('preview-title').textContent = titleEl ? titleEl.textContent : 'Preview';
+  document.getElementById('preview-frame').src = url;
+  document.getElementById('preview-download').href = url;
+  document.getElementById('preview-download').setAttribute('download', url.split('/').pop());
+  openModal('pdf-preview-modal');
+}
 
 // ── Modal openers
 function openCertModal(id) {
@@ -798,20 +863,52 @@ function replacePdf() {
 }
 
 // ── Add new policy from form
+function openEditPolicyModal(id) {
+  const p = policies.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('edit-policy-id').value   = id;
+  document.getElementById('edit-policy-name').value = p.name;
+  document.getElementById('edit-policy-cat').value  = p.category;
+  document.getElementById('edit-policy-status').value = p.status;
+  document.getElementById('edit-policy-desc').value = p.desc || '';
+  document.getElementById('edit-policy-desc-count').textContent = (p.desc||'').length + ' / 500';
+  openModal('edit-policy-modal');
+}
+
+async function saveEditPolicy() {
+  const id     = parseInt(document.getElementById('edit-policy-id').value);
+  const name   = document.getElementById('edit-policy-name').value.trim();
+  const cat    = document.getElementById('edit-policy-cat').value;
+  const status = document.getElementById('edit-policy-status').value;
+  const desc   = document.getElementById('edit-policy-desc').value.trim();
+  if (!name)             { showToast('Policy name is required'); return; }
+  if (!desc)             { showToast('Description is required'); return; }
+  if (desc.length > 500) { showToast('Description must not exceed 500 characters'); return; }
+  await fetch(`/api/policies/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ name, category:cat, status, desc, updated:todayStr() }) });
+  await loadData();
+  closeModal('edit-policy-modal');
+  showToast(`"${name}" updated`);
+}
+
 async function addNewPolicy() {
   const name  = document.getElementById('new-policy-name').value.trim();
   const cat   = document.getElementById('new-policy-cat').value;
   const desc  = document.getElementById('new-policy-desc').value.trim();
-  if (!name) { showToast('Please enter a policy name'); return; }
-  const pdfFile = await uploadFile(document.getElementById('new-policy-file'), 'policies');
-  const item = { name, status:'Published', category:cat, updated:todayStr(), desc:desc||'No description provided.', icon:'description', pdfFile };
+  const file  = document.getElementById('new-policy-file');
+  if (!name)           { showToast('Policy name is required'); return; }
+  if (!desc)           { showToast('Description is required'); return; }
+  if (desc.length > 500) { showToast('Description must not exceed 500 characters'); return; }
+  if (!file.files[0])  { showToast('PDF document is required'); return; }
+  const pdfFile = await uploadFile(file, 'policies');
+  const item = { name, status:'Published', category:cat, updated:todayStr(), desc, icon:'description', pdfFile };
   await fetch('/api/policies', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) });
   await loadData();
   closeModal('new-policy-modal');
   showToast(`"${name}" added`);
   document.getElementById('new-policy-name').value = '';
   document.getElementById('new-policy-desc').value = '';
-  document.getElementById('new-policy-file').value = '';
+  document.getElementById('new-policy-desc-count').textContent = '0 / 500';
+  file.value = '';
 }
 
 // ── Add new report from form
@@ -861,7 +958,7 @@ async function addNewCert() {
 }
 
 // ── Navigation
-const pageTitles = { dashboard:'Dashboard', policies:'Policy Library', reports:'Reports', vapt:'VAPT Reports', certificates:'Certificates' };
+const pageTitles = { dashboard:'GRC Command Center', policies:'Policy Library', reports:'Reports', vapt:'VAPT Reports', certificates:'Certificates' };
 function navigate(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+pageId).classList.add('active');
