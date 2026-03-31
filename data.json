@@ -1,0 +1,720 @@
+{
+  "policies": [
+    {
+      "id": 1,
+      "name": "Acceptable Usage Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines acceptable use of information systems, assets, and network resources across the organization.",
+      "icon": "computer",
+      "pdfFile": "policies/Vantagecircle_Acceptable_Usage_Policy.docx (1) (2).pdf"
+    },
+    {
+      "id": 2,
+      "name": "Antivirus Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Governs deployment and management of antivirus and malware protection controls on all endpoints.",
+      "icon": "security",
+      "pdfFile": "policies/Vantagecircle_Antivirus_Policy.docx.pdf"
+    },
+    {
+      "id": 3,
+      "name": "Anti-Bribery Policy",
+      "status": "Published",
+      "category": "HR",
+      "updated": "—",
+      "desc": "Outlines the organization's stance on bribery, gifts, and anti-corruption practices for all staff.",
+      "icon": "balance",
+      "pdfFile": "policies/VC_Anti-Bribery Policy.pdf"
+    },
+    {
+      "id": 4,
+      "name": "Artificial Intelligence Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Oct 15, 2025",
+      "desc": "Governs responsible use, governance, and risk management of AI/ML technologies within the organization.",
+      "icon": "smart_toy",
+      "pdfFile": "policies/Vantage Circle_Artificial_Intelligence_Policy (1) 3 (1).pdf"
+    },
+    {
+      "id": 5,
+      "name": "Asset Management Policy & Procedure",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines procedures for identification, classification, and lifecycle management of organizational assets.",
+      "icon": "inventory_2",
+      "pdfFile": "policies/Vantagecircle_Asset_Management_Policy_&_Procedure.docx (1) (4).pdf"
+    },
+    {
+      "id": 6,
+      "name": "BCP and DR Policy & Procedure",
+      "status": "Published",
+      "category": "Operations",
+      "updated": "Jun 1, 2025",
+      "desc": "Establishes procedures for business continuity planning and disaster recovery to maintain operations.",
+      "icon": "restore",
+      "pdfFile": "policies/Vantagecircle_BCP_and_DR_Policy_and_Procedure.docx (3).pdf"
+    },
+    {
+      "id": 7,
+      "name": "BCP/DR Test Report 2026",
+      "status": "Published",
+      "category": "Operations",
+      "updated": "Jan 30, 2026",
+      "desc": "Results of the Business Continuity Plan and Disaster Recovery test conducted in January 2026.",
+      "icon": "fact_check",
+      "pdfFile": "policies/BCP_DR_Test_Report_2026.pdf"
+    },
+    {
+      "id": 8,
+      "name": "Change Management Policy & Procedure",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines controls for managing changes to information systems, applications, and infrastructure.",
+      "icon": "manage_history",
+      "pdfFile": "policies/Vantagecircle_Change_Management_Policy_&_Procedure.docx (2).pdf"
+    },
+    {
+      "id": 9,
+      "name": "Clear Desk & Clear Screen Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Ensures physical and on-screen security of workstations and sensitive information when unattended.",
+      "icon": "monitor",
+      "pdfFile": "policies/Vantagecircle_Clear_Desk_&_Screen_Policy.docx (2).pdf"
+    },
+    {
+      "id": 10,
+      "name": "Cloud Security Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Apr 1, 2025",
+      "desc": "Governs security controls, responsibilities, and standards for cloud-hosted services and infrastructure.",
+      "icon": "cloud_done",
+      "pdfFile": "policies/Vantage Circle_Cloud Security Policy (2) (1) (1).pdf"
+    },
+    {
+      "id": 11,
+      "name": "Code of Conduct and Ethics",
+      "status": "Published",
+      "category": "HR",
+      "updated": "—",
+      "desc": "Sets behavioral standards and ethical guidelines for all employees and contractors at Vantage Circle.",
+      "icon": "handshake",
+      "pdfFile": "policies/Code of Conduct & Ethics Policy 2.pdf"
+    },
+    {
+      "id": 12,
+      "name": "Configuration Management Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines procedures for secure configuration and baseline hardening of all IT systems and devices.",
+      "icon": "settings_applications",
+      "pdfFile": "policies/Vantage Circle_Configuration_Policy_and_Procedure (1).pdf"
+    },
+    {
+      "id": 13,
+      "name": "Consent Management Procedure",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "May 14, 2025",
+      "desc": "Procedures for obtaining, recording, and managing data subject consent in compliance with privacy regulations.",
+      "icon": "how_to_reg",
+      "pdfFile": "policies/Vantage Circle_Consent Management Procedure.pdf"
+    },
+    {
+      "id": 14,
+      "name": "Cookie Policy",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Governs the use of cookies and tracking technologies across organizational websites and applications.",
+      "icon": "cookie",
+      "pdfFile": "policies/Vantagecircle_Cookie_Policy_2025.pdf"
+    },
+    {
+      "id": 15,
+      "name": "Cryptography Policy & Procedure",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines standards for cryptographic controls, encryption algorithms, and key lifecycle management.",
+      "icon": "key",
+      "pdfFile": "policies/Vantagecircle_Cryptography_Policy_and_Procedure.docx (2).pdf"
+    },
+    {
+      "id": 16,
+      "name": "Data Backup Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Dec 1, 2025",
+      "desc": "Defines procedures for data backup frequency, retention, recovery testing, and backup media management.",
+      "icon": "backup",
+      "pdfFile": "policies/Vantagecircle_Data_Backup_Policy.docx_1 (2) (3).pdf"
+    },
+    {
+      "id": 17,
+      "name": "Personal Data Breach Management",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Procedures for identifying, escalating, reporting, and responding to personal data breaches.",
+      "icon": "notification_important",
+      "pdfFile": "policies/Vantagecircle_Data_Breach_Management_Procedure.docx (1) (1).pdf"
+    },
+    {
+      "id": 18,
+      "name": "Data Minimization Policy",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Apr 14, 2025",
+      "desc": "Ensures data collected is limited to what is necessary for specified, explicit, and legitimate purposes.",
+      "icon": "compress",
+      "pdfFile": "policies/Vantage Circle_Limited Data Set Policy_Data Minimization Policy.pdf"
+    },
+    {
+      "id": 19,
+      "name": "Data Privacy Impact Assessment",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Methodology for conducting DPIA for high-risk processing activities in compliance with GDPR Art. 35.",
+      "icon": "analytics",
+      "pdfFile": "policies/Vantagecircle_DPIA.docx.pdf"
+    },
+    {
+      "id": 20,
+      "name": "Data Privacy Policy",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Governs collection, storage, processing, and sharing of personal data across all platforms.",
+      "icon": "privacy_tip",
+      "pdfFile": "policies/Vantagecircle_Data Privacy Policy.docx.pdf"
+    },
+    {
+      "id": 21,
+      "name": "Data Retention and Disposal Policy",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines retention schedules and secure disposal procedures for organizational data assets.",
+      "icon": "delete_forever",
+      "pdfFile": "policies/Vantagecircle_Data_Retention_and_Disposal_Policy.docx.pdf"
+    },
+    {
+      "id": 22,
+      "name": "Data Subject Request Manual",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Procedures for handling data subject rights requests: access, rectification, erasure, and portability.",
+      "icon": "person_search",
+      "pdfFile": "policies/Vantagecircle_Data_Subject_Request_Manual.docx  (1).pdf"
+    },
+    {
+      "id": 23,
+      "name": "Employee Data Privacy Statement",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Statement describing how employee personal data is collected, processed, and protected.",
+      "icon": "badge",
+      "pdfFile": "policies/Vantagecircle_Employee_Data_Privacy_Statement.docx (1).pdf"
+    },
+    {
+      "id": 24,
+      "name": "Employee Exit Policy",
+      "status": "Published",
+      "category": "HR",
+      "updated": "—",
+      "desc": "Defines procedures, responsibilities, and checklists for the employee offboarding and exit process.",
+      "icon": "exit_to_app",
+      "pdfFile": "policies/Employee Exit Policy (1) (1).pdf"
+    },
+    {
+      "id": 25,
+      "name": "Employee Privacy Statement",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Privacy notice informing employees of their rights and how their personal data is handled by Vantage Circle.",
+      "icon": "person",
+      "pdfFile": "policies/Vantagecircle_Employee_Privacy_Statement.docx (1) (1) (2).pdf"
+    },
+    {
+      "id": 26,
+      "name": "Hardening Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines baseline security hardening requirements for servers, endpoints, and network devices.",
+      "icon": "shield",
+      "pdfFile": "policies/Vantagecircle_Hardening_Policy.docx (1) (1).pdf"
+    },
+    {
+      "id": 27,
+      "name": "HR Disciplinary Policy & Procedure",
+      "status": "Published",
+      "category": "HR",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines disciplinary procedures, progressive discipline steps, and grievance handling processes.",
+      "icon": "gavel",
+      "pdfFile": "policies/Vantagecircle_HR_Disciplinary_Action_Policy_&_Procedure.docx (1)-2 (1).pdf"
+    },
+    {
+      "id": 28,
+      "name": "HR Security Policy",
+      "status": "Published",
+      "category": "HR",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines information security requirements during recruitment, employment lifecycle, and termination.",
+      "icon": "group",
+      "pdfFile": "policies/Vantagecircle_HR_Security_Policy.docx.pdf"
+    },
+    {
+      "id": 29,
+      "name": "Incident Management Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines procedures for detecting, reporting, classifying, and responding to information security incidents.",
+      "icon": "warning",
+      "pdfFile": "policies/Vantagecircle_Incident_Management_Policy_and_Procedure.docx (1).pdf"
+    },
+    {
+      "id": 30,
+      "name": "Information Classification Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines classification levels (Public, Internal, Confidential, Restricted) and handling requirements.",
+      "icon": "label",
+      "pdfFile": "policies/Vantagecircle_Information_Classification_Policy.docx (2).pdf"
+    },
+    {
+      "id": 31,
+      "name": "ISMS Manual",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "The Information Security Management System manual defining the ISMS framework, scope, and control objectives.",
+      "icon": "menu_book",
+      "pdfFile": "policies/vantage_circle_information_security_management_system_manual (1).pdf"
+    },
+    {
+      "id": 32,
+      "name": "Information Security Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines organizational controls for information systems, access management, and incident response.",
+      "icon": "verified_user",
+      "pdfFile": "policies/Vantage Circle_Information_Security_Policy (1) (1).pdf"
+    },
+    {
+      "id": 33,
+      "name": "Log Management and Monitoring Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines logging standards, log retention periods, and security event monitoring procedures.",
+      "icon": "monitoring",
+      "pdfFile": "policies/Vantagecircle_Log_Management_and_Monitoring_Policy_and_Procedure.docx (1) (2).pdf"
+    },
+    {
+      "id": 34,
+      "name": "Logical Access Control Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines access control standards, user provisioning, privilege management, and access review procedures.",
+      "icon": "lock_person",
+      "pdfFile": "policies/Vantagecircle_Logical_Access_Control_Policy_&_Procedure.docx (1) (1) (2).pdf"
+    },
+    {
+      "id": 35,
+      "name": "Media Handling and Disposal Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines procedures for secure handling, storage, transfer, and disposal of physical and digital media.",
+      "icon": "sd_card",
+      "pdfFile": "policies/Vantagecircle_Media_Handling_and_Disposal_Policy.docx (2).pdf"
+    },
+    {
+      "id": 36,
+      "name": "Network Management Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines network security controls, segmentation, access rules, and monitoring requirements.",
+      "icon": "hub",
+      "pdfFile": "policies/Vantagecircle_Network_Management_Policy.docx.pdf"
+    },
+    {
+      "id": 37,
+      "name": "Password Management Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines password complexity, rotation frequency, and secure storage requirements for all systems.",
+      "icon": "password",
+      "pdfFile": "policies/Vantagecircle_Password_Management_Policy.docx.pdf"
+    },
+    {
+      "id": 38,
+      "name": "Patch and Vulnerability Management",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines procedures for identifying, prioritizing, testing, and applying security patches and fixes.",
+      "icon": "system_update",
+      "pdfFile": "policies/Vantagecircle_Patch_and_Vulnerability_Management_Policy.docx (1) (1) (1).pdf"
+    },
+    {
+      "id": 39,
+      "name": "Physical Access Control Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines controls for physical access to facilities, data centers, server rooms, and secure areas.",
+      "icon": "door_front",
+      "pdfFile": "policies/Vantagecircle_Physical_Access_Control_Policy.docx (1) (2).pdf"
+    },
+    {
+      "id": 40,
+      "name": "Physical & Environmental Security",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines physical security controls for premises, equipment protection, and environmental threat management.",
+      "icon": "domain",
+      "pdfFile": "policies/Vantagecircle_Physical_&_Environmental_Security_Policy.docx.pdf"
+    },
+    {
+      "id": 41,
+      "name": "Privacy Policy",
+      "status": "Published",
+      "category": "Privacy",
+      "updated": "Jun 1, 2025",
+      "desc": "Public-facing policy describing how customer and user personal data is collected, used, and protected.",
+      "icon": "policy",
+      "pdfFile": "policies/Vantagecircle_Privacy_Policy.docx.pdf"
+    },
+    {
+      "id": 42,
+      "name": "Risk Management Procedure",
+      "status": "Published",
+      "category": "Operations",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines the risk assessment methodology, risk treatment options, and risk acceptance criteria.",
+      "icon": "assessment",
+      "pdfFile": "policies/Vantagecircle_Risk_Management_Procedure.docx (1) (2).pdf"
+    },
+    {
+      "id": 43,
+      "name": "Secure Development and Maintenance",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jul 29, 2025",
+      "desc": "Defines secure coding standards, code review requirements, and vulnerability management in the SDLC.",
+      "icon": "code",
+      "pdfFile": "policies/vantage_circle_secure_development_and_maintenance_policy (3).pdf"
+    },
+    {
+      "id": 44,
+      "name": "Software Development Lifecycle",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jul 29, 2025",
+      "desc": "Defines the SDLC process, security gates, testing requirements, and quality standards for software development.",
+      "icon": "developer_mode",
+      "pdfFile": "policies/Vantage Circle_Software Development Lifecycle Procedure (3).pdf"
+    },
+    {
+      "id": 45,
+      "name": "Supplier Management Policy",
+      "status": "Published",
+      "category": "Operations",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines requirements for third-party vendor risk assessment, onboarding, and ongoing monitoring.",
+      "icon": "storefront",
+      "pdfFile": "policies/Vantagecircle_Supplier_Management_Policy_&_Procedure.docx (1) (1) 2.pdf"
+    },
+    {
+      "id": 46,
+      "name": "Threat Intelligence Policy",
+      "status": "Published",
+      "category": "Security",
+      "updated": "Jun 1, 2025",
+      "desc": "Defines processes for gathering, analyzing, and operationalizing threat intelligence data.",
+      "icon": "radar",
+      "pdfFile": "policies/Vantage Circle_Threat_Intelligence_Policy (1).pdf"
+    },
+    {
+      "id": 47,
+      "name": "Work From Home Policy",
+      "status": "Published",
+      "category": "HR",
+      "updated": "—",
+      "desc": "Defines eligibility criteria, equipment requirements, and information security guidelines for remote work.",
+      "icon": "home_work",
+      "pdfFile": "policies/WFH POLICY_VC (1) (2) (2).pdf"
+    }
+  ],
+  "reports": [
+    {
+      "id": 1,
+      "title": "HIPAA Compliance Audit",
+      "subtitle": "Assessed by Scrut Automation Inc.",
+      "status": "Complete",
+      "date": "Feb 2026",
+      "icon": "medical_services",
+      "pdfFile": "certificates/HIPAA_Compliance_Audit_Report.pdf",
+      "desc": "HIPAA compliance audit for Bargain Technologies (Vantage Circle) against NIST SP 800-66 Rev. 2. Assessment Date: Feb 5, 2026. Report Date: Feb 17, 2026."
+    },
+    {
+      "id": 2,
+      "title": "CCPA Compliance Audit",
+      "subtitle": "Assessed by Scrut Automation Inc.",
+      "status": "Complete",
+      "date": "Feb 2026",
+      "icon": "gavel",
+      "pdfFile": "certificates/CCPA_Audit_Report.pdf",
+      "desc": "California Consumer Privacy Act audit covering data collection practices, consumer rights implementation, and data retention policies. Assessment Date: Feb 5, 2026."
+    },
+    {
+      "id": 3,
+      "title": "DPDPA Compliance Audit",
+      "subtitle": "Assessed by Scrut Automation",
+      "status": "Complete",
+      "date": "Feb 2026",
+      "icon": "fingerprint",
+      "pdfFile": "certificates/DPDPA_Audit_Report.pdf",
+      "desc": "Digital Personal Data Protection Act compliance audit evaluating consent management, lawful data processing, and data principal rights. Assessment Date: Feb 5, 2026."
+    },
+    {
+      "id": 4,
+      "title": "GDPR Assessment Report",
+      "subtitle": "Assessed by Scrut Automation Inc.",
+      "status": "Complete",
+      "date": "May 2025",
+      "icon": "language",
+      "pdfFile": "reports/GDPR_Audit_Report_2025.pdf",
+      "desc": "GDPR compliance assessment for Bargain Technologies covering EU operations, data mapping, and processing activities under Regulation (EU) 2016/679. Assessment Date: May 28, 2025."
+    },
+    {
+      "id": 5,
+      "title": "BCP/DR Test Report 2026",
+      "subtitle": "Business Continuity Plan Test Result",
+      "status": "Verified",
+      "date": "Jan 2026",
+      "icon": "verified",
+      "pdfFile": "policies/BCP_DR_Test_Report_2026.pdf",
+      "desc": "Business Continuity Plan and Disaster Recovery test result report for Vantage Circle. Version 3.0. Release Date: Jan 30, 2026."
+    }
+  ],
+  "vapt": [
+    {
+      "id": 1,
+      "title": "Web Application VAPT",
+      "subtitle": "Vantage Circle Web Application",
+      "date": "May 8, 2025",
+      "reportId": "VAPT-WEB-2025",
+      "pdfFile": "vapt/Web_App_VAPT_May2025.pdf",
+      "status": "Complete",
+      "findings": {
+        "critical": 0,
+        "high": 0,
+        "medium": 1,
+        "low": 1
+      },
+      "desc": "Level 2 Closure Report. 2 findings identified: EXIF Geolocation data exposure (Medium) and Overly permissive cross-access domain policy (Low). Both fixed at Level 2. Assessed by Cybertryzub Infosec (May 5–8, 2025)."
+    },
+    {
+      "id": 2,
+      "title": "Android Application VAPT",
+      "subtitle": "Vantage Circle Android App",
+      "date": "Feb 21, 2025",
+      "reportId": "VAPT-AND-2025",
+      "pdfFile": "vapt/Android_App_VAPT_Feb2025.pdf",
+      "status": "Complete",
+      "findings": {
+        "critical": 0,
+        "high": 2,
+        "medium": 1,
+        "low": 1
+      },
+      "desc": "Level 2 Closure Report. 4 findings: No Root Detection (High — Fixed), Vulnerable Android version (High — BUC), Insecure permissions (Medium — BUC), CSP header missing (Low — BUC). Assessed by Cybertryzub Infosec (Feb 19–21, 2025)."
+    },
+    {
+      "id": 3,
+      "title": "iOS Application VAPT",
+      "subtitle": "Vantage Circle iOS App",
+      "date": "Feb 21, 2025",
+      "reportId": "VAPT-IOS-2025",
+      "pdfFile": "vapt/iOS_App_VAPT_Feb2025.pdf",
+      "status": "Complete",
+      "findings": {
+        "critical": 0,
+        "high": 2,
+        "medium": 1,
+        "low": 1
+      },
+      "desc": "Level 2 Closure Report. 4 findings: No Jailbreak Detection (High — Fixed), ATS Misconfigured (High — BUC), Insecure permissions (Medium — BUC), CSP header missing (Low — BUC). Assessed by Cybertryzub Infosec (Feb 20–21, 2025)."
+    },
+    {
+      "id": 4,
+      "title": "Source Code Security Review (SAST)",
+      "subtitle": "Bargain Technologies — Application Source Code",
+      "date": "Jul 30, 2025",
+      "reportId": "SAST-2025",
+      "pdfFile": "SAST/Vantage_Circle_Source_Code_Review_Audit_Level_2_Report.pdf",
+      "status": "Complete",
+      "findings": {
+        "critical": 0,
+        "high": 4,
+        "medium": 10,
+        "low": 0
+      },
+      "desc": "Level 2 Closure Report. 14 findings: 4 High (Command Injection, Path Traversal, SSRF, Hardcoded Secrets) and 10 Medium (encryption, cryptographic, and cookie issues). All 14 findings fixed at Level 2. Assessed by Cybertryzub Infosec (Jul 15–30, 2025)."
+    }
+  ],
+  "certificates": [
+    {
+      "id": 1,
+      "name": "ISO 27001",
+      "status": "Active",
+      "fullName": "Information Security Management System",
+      "icon": "verified",
+      "color": "green",
+      "pdfFile": "certificates/ISO_27001_Certificate.pdf",
+      "issuedDate": "Apr 25, 2024",
+      "expiryDate": "Apr 24, 2027",
+      "certBody": "INTERCERT"
+    },
+    {
+      "id": 2,
+      "name": "ISO 27701",
+      "status": "Certified",
+      "fullName": "Privacy Information Management System",
+      "icon": "shield",
+      "color": "green",
+      "pdfFile": "certificates/ISO_27701_Certificate.pdf",
+      "issuedDate": "Apr 25, 2024",
+      "expiryDate": "Apr 24, 2026",
+      "certBody": "INTERCERT"
+    },
+    {
+      "id": 3,
+      "name": "SOC 2 Type II",
+      "status": "Active",
+      "fullName": "Security, Availability & Confidentiality",
+      "icon": "lock",
+      "color": "green",
+      "pdfFile": "certificates/SOC2_TypeII_Certificate.pdf",
+      "issuedDate": "Apr 1, 2024",
+      "expiryDate": "Mar 31, 2025",
+      "certBody": "Accorp Partners"
+    },
+    {
+      "id": 4,
+      "name": "HIPAA",
+      "status": "Active",
+      "fullName": "Health Insurance Portability Act",
+      "icon": "medical_services",
+      "color": "green",
+      "pdfFile": "certificates/HIPAA_Compliance_Audit_Report.pdf",
+      "issuedDate": "Feb 5, 2026",
+      "expiryDate": "Feb 17, 2026",
+      "certBody": "Scrut Automation"
+    },
+    {
+      "id": 5,
+      "name": "CCPA",
+      "status": "Compliant",
+      "fullName": "California Consumer Privacy Act",
+      "icon": "gavel",
+      "color": "green",
+      "pdfFile": "certificates/CCPA_Audit_Report.pdf",
+      "issuedDate": "Feb 5, 2026",
+      "expiryDate": "—",
+      "certBody": "Scrut Automation"
+    },
+    {
+      "id": 6,
+      "name": "DPDPA",
+      "status": "Compliant",
+      "fullName": "Digital Personal Data Protection Act",
+      "icon": "fingerprint",
+      "color": "green",
+      "pdfFile": "certificates/DPDPA_Audit_Report.pdf",
+      "issuedDate": "Feb 5, 2026",
+      "expiryDate": "—",
+      "certBody": "Scrut Automation"
+    },
+    {
+      "id": 7,
+      "name": "GDPR",
+      "status": "Certified",
+      "fullName": "General Data Protection Regulation (EU)",
+      "icon": "language",
+      "color": "green",
+      "pdfFile": "reports/GDPR_Audit_Report_2025.pdf",
+      "issuedDate": "May 28, 2025",
+      "expiryDate": "—",
+      "certBody": "Scrut Automation"
+    }
+  ],
+  "risks": [
+    {
+      "id": 1,
+      "risk": "Data Breach Exposure",
+      "category": "Privacy",
+      "severity": "High",
+      "owner": "Security Team",
+      "riskStatus": "Mitigating"
+    },
+    {
+      "id": 2,
+      "risk": "Third-Party Vendor Risk",
+      "category": "Operations",
+      "severity": "Medium",
+      "owner": "Risk Officer",
+      "riskStatus": "Monitored"
+    },
+    {
+      "id": 3,
+      "risk": "Regulatory Non-Compliance",
+      "category": "Legal",
+      "severity": "Medium",
+      "owner": "Legal Team",
+      "riskStatus": "Resolved"
+    },
+    {
+      "id": 4,
+      "risk": "Insider Threat Exposure",
+      "category": "HR",
+      "severity": "High",
+      "owner": "HR & Security",
+      "riskStatus": "Mitigating"
+    },
+    {
+      "id": 5,
+      "risk": "Cloud Misconfiguration",
+      "category": "IT",
+      "severity": "Low",
+      "owner": "DevOps Team",
+      "riskStatus": "Monitored"
+    }
+  ]
+}

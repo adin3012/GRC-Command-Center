@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{colors:{
+    "surface-bright":"#f8f9fa","inverse-surface":"#2e3132","surface-container-high":"#e7e8e9",
+    "secondary-container":"#a0f399","on-surface":"#191c1d","surface-container-highest":"#e1e3e4",
+    "inverse-primary":"#bdc2ff","on-primary-container":"#8690ee","tertiary":"#002108",
+    "surface-container-lowest":"#ffffff","on-primary-fixed-variant":"#343d96",
+    "surface-container":"#edeeef","on-tertiary-container":"#00b048","primary":"#000666",
+    "error-container":"#ffdad6","on-primary":"#ffffff","on-secondary-fixed":"#002204",
+    "surface-container-low":"#f3f4f5","surface":"#f8f9fa","primary-container":"#1a237e",
+    "inverse-on-surface":"#f0f1f2","on-error":"#ffffff","tertiary-container":"#003912",
+    "background":"#f8f9fa","outline-variant":"#c6c5d4","secondary-fixed-dim":"#88d982",
+    "surface-dim":"#d9dadb","secondary":"#1b6d24","on-background":"#191c1d",
+    "primary-fixed-dim":"#bdc2ff","surface-tint":"#4c56af","on-secondary-container":"#217128",
+    "tertiary-fixed-dim":"#3ce36a","outline":"#767683","on-secondary":"#ffffff",
+    "error":"#ba1a1a","surface-variant":"#e1e3e4","secondary-fixed":"#a3f69c",
+    "primary-fixed":"#e0e0ff","on-error-container":"#93000a","on-tertiary":"#ffffff",
+    "tertiary-fixed":"#69ff87","on-tertiary-fixed":"#002108","on-surface-variant":"#454652","on-primary-fixed":"#000767"
+  },fontFamily:{"headline":["Manrope"],"body":["Inter"],"label":["Inter"]},
+  borderRadius:{"DEFAULT":"0.25rem","lg":"1rem","xl":"0.75rem","full":"9999px"}}}
+}
+</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  body{font-family:'Inter',sans-serif}
+  h1,h2,h3{font-family:'Manrope',sans-serif}
+  .page{display:none;animation:fadeIn .25s ease}
+  .page.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(25,28,29,.45);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex;animation:fadeIn .2s ease}
+  .modal-box{animation:slideUp .25s ease}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);transition:transform .3s ease;z-index:200}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+  .nav-link.active{color:#000666;font-weight:700;background:white;border-right:4px solid #000666}
+  .nav-link{transition:all .15s ease}
+  .filter-chip.active{background:#000666;color:white}
+  .filter-chip{cursor:pointer;transition:all .15s ease}
+  #search-dropdown{display:none}
+  #search-dropdown.open{display:block}
+  .vapt-card{cursor:pointer;transition:all .2s ease}
+  .vapt-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,6,102,.1)}
+</style>
+</head>
+<body class="bg-surface text-on-surface">
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="flex flex-col h-screen fixed left-0 top-0 z-40 w-64 bg-slate-50 font-['Inter'] text-sm font-medium tracking-tight">
+  <div class="p-8">
+    <div class="flex items-center gap-3 mb-10">
+      <img src="/logo/VC_Logo.png" alt="Vantage Circle" class="w-14 h-14 rounded-lg object-contain"/>
+      <div>
+        <div class="font-['Manrope'] text-[10px] font-semibold text-on-surface-variant/70 uppercase tracking-widest leading-none mb-0.5">Vantage Circle</div>
+        <div class="font-['Manrope'] text-lg font-bold text-indigo-950 leading-tight">GRC Ledger</div>
+      </div>
+    </div>
+    <nav class="space-y-1">
+      <a class="nav-link active flex items-center gap-3 px-4 py-3" href="#" data-page="dashboard"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-700 hover:bg-slate-100" href="#" data-page="policies"><span class="material-symbols-outlined">policy</span><span>Policies</span></a>
+      <a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-700 hover:bg-slate-100" href="#" data-page="reports"><span class="material-symbols-outlined">assessment</span><span>Reports</span></a>
+      <a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-700 hover:bg-slate-100" href="#" data-page="vapt"><span class="material-symbols-outlined">security</span><span>VAPT Reports</span></a>
+      <a class="nav-link flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-700 hover:bg-slate-100" href="#" data-page="certificates"><span class="material-symbols-outlined">verified_user</span><span>Certificates</span></a>
+    </nav>
+  </div>
+  <div class="mt-auto p-6 border-t border-slate-200">
+    <!-- Logged out -->
+    <div id="sidebar-logged-out">
+      <button onclick="openModal('login-modal')" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-700 hover:bg-slate-100 rounded-md transition-all text-sm font-medium">
+        <span class="material-symbols-outlined">lock</span><span>Admin Login</span>
+      </button>
+    </div>
+    <!-- Logged in -->
+    <div id="sidebar-logged-in" style="display:none">
+      <div class="flex items-center gap-3 mb-4 px-1">
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">A</div>
+        <div><span class="text-xs font-semibold text-on-surface block">Admin</span><span class="text-[10px] text-on-surface-variant">Administrator</span></div>
+      </div>
+      <button onclick="doLogout()" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-all text-sm font-medium">
+        <span class="material-symbols-outlined">logout</span><span>Logout</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════ TOP NAV ══════════════ -->
+<header class="flex justify-between items-center h-16 ml-64 px-8 w-[calc(100%-16rem)] bg-white/85 backdrop-blur-xl shadow-sm shadow-slate-200/50 fixed top-0 z-30">
+  <div class="flex items-center flex-1 max-w-xl relative">
+    <div class="relative w-full rounded-md">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-sm">search</span>
+      <input id="search-input" class="w-full bg-surface-container-high border-none rounded-md py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 placeholder:text-on-surface-variant/40 outline-none" placeholder="Search policies, reports, certificates..." type="text" autocomplete="off"/>
+    </div>
+    <div id="search-dropdown" class="absolute top-full mt-2 left-0 w-full bg-white rounded-lg shadow-xl border border-outline-variant/20 z-50 overflow-hidden">
+      <div class="px-4 py-2 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-wider bg-surface-container-low">Quick Results</div>
+      <div id="search-results"></div>
+    </div>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="flex items-center gap-4 text-slate-500">
+      <button class="hover:text-indigo-600 transition-colors" onclick="openModal('help-modal')"><span class="material-symbols-outlined">help_outline</span></button>
+    </div>
+    <div class="h-8 w-[1px] bg-slate-200"></div>
+    <h1 id="page-title" class="font-['Manrope'] font-semibold text-lg text-indigo-900">Dashboard</h1>
+  </div>
+</header>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="ml-64 pt-24 px-12 pb-12 min-h-screen bg-surface">
+
+  <!-- ── DASHBOARD ── -->
+  <div class="page active" id="page-dashboard">
+    <section class="grid grid-cols-12 gap-8 mb-12">
+      <div class="col-span-12 lg:col-span-8">
+        <span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant/60 uppercase">Operational Overview</span>
+        <h2 class="text-4xl font-extrabold text-primary font-headline tracking-tight mt-1">Compliance Status</h2>
+      </div>
+      <div class="col-span-12 lg:col-span-4 flex gap-4 items-end">
+        <div class="flex-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm">
+          <div class="text-on-surface-variant text-xs font-medium mb-1">Total Policies</div>
+          <div id="dash-policy-count" class="text-3xl font-bold text-primary font-headline">0</div>
+          <div class="mt-2 flex items-center text-[10px] text-secondary font-bold"><span class="material-symbols-outlined text-sm mr-1">trending_up</span>+4 this month</div>
+        </div>
+        <div class="flex-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm">
+          <div class="text-on-surface-variant text-xs font-medium mb-1">Total Reports</div>
+          <div id="dash-report-count" class="text-3xl font-bold text-primary font-headline">0</div>
+          <div class="mt-2 flex items-center text-[10px] text-secondary font-bold"><span class="material-symbols-outlined text-sm mr-1">check_circle</span>100% On-time</div>
+        </div>
+      </div>
+    </section>
+    <!-- Certificates strip -->
+    <section class="mb-12">
+      <div class="flex justify-between items-center mb-6">
+        <div><h3 class="text-xl font-bold text-primary mb-1">Compliance Certificates</h3><p class="text-sm text-on-surface-variant/70">Certified frameworks and active regulatory standings</p></div>
+        <button onclick="showToast('Ledger exported as PDF')" class="text-xs font-bold text-primary px-4 py-2 bg-surface-container rounded-md hover:bg-surface-container-high transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">download</span>Export Ledger</button>
+      </div>
+      <div id="dash-certs" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+    </section>
+    <!-- Bento -->
+    <div class="grid grid-cols-12 gap-8">
+      <section class="col-span-12 lg:col-span-7">
+        <div class="bg-surface-container-lowest rounded-lg p-8 shadow-sm">
+          <div class="flex justify-between items-center mb-8">
+            <div><h3 class="text-xl font-bold text-primary mb-1">Recent Policy Documents</h3><p class="text-sm text-on-surface-variant/70">Governance updates and lifecycle tracking</p></div>
+            <button onclick="navigate('policies')" class="text-xs font-bold text-primary px-4 py-2 bg-surface-container rounded-md hover:bg-surface-container-high transition-colors">View All</button>
+          </div>
+          <div id="dash-policies" class="space-y-4"></div>
+        </div>
+      </section>
+      <section class="col-span-12 lg:col-span-5 space-y-8">
+        <div class="bg-primary p-8 rounded-lg text-white shadow-xl relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary-container to-primary opacity-50"></div>
+          <div class="relative z-10">
+            <div class="flex justify-between items-start mb-10">
+              <div><h3 class="text-xl font-bold font-headline mb-1">Compliance Reports</h3><p class="text-white/60 text-xs">Recent audits &amp; status snapshots</p></div>
+              <span class="material-symbols-outlined text-tertiary-fixed">analytics</span>
+            </div>
+            <div id="dash-reports" class="space-y-4"></div>
+            <button onclick="openModal('new-report-modal')" class="admin-only w-full mt-8 bg-secondary-fixed text-on-secondary-fixed font-bold py-3 rounded-md text-sm hover:brightness-110 transition-all flex items-center justify-center gap-2" style="display:none">Generate New Report<span class="material-symbols-outlined text-sm">add</span></button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ── POLICIES ── -->
+  <div class="page" id="page-policies">
+    <div class="mb-8">
+      <span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant/60 uppercase">Governance</span>
+      <h2 class="text-4xl font-extrabold text-primary font-headline tracking-tight mt-1">Policy Library</h2>
+    </div>
+    <div class="flex items-center gap-3 mb-8 flex-wrap">
+      <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mr-2">Filter:</span>
+      <button class="filter-chip active px-4 py-1.5 rounded-full text-xs font-bold bg-surface-container-highest text-on-surface-variant" data-filter="all">All</button>
+      <button class="filter-chip px-4 py-1.5 rounded-full text-xs font-bold bg-surface-container-highest text-on-surface-variant" data-filter="Published">Published</button>
+      <button class="filter-chip px-4 py-1.5 rounded-full text-xs font-bold bg-surface-container-highest text-on-surface-variant" data-filter="Under Review">Under Review</button>
+      <button class="filter-chip px-4 py-1.5 rounded-full text-xs font-bold bg-surface-container-highest text-on-surface-variant" data-filter="Draft">Draft</button>
+      <div class="ml-auto admin-only" style="display:none"><button onclick="openModal('new-policy-modal')" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:brightness-110 flex items-center gap-2"><span class="material-symbols-outlined text-sm">add</span>New Policy</button></div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-lg shadow-sm overflow-hidden">
+      <div class="grid grid-cols-12 px-6 py-3 bg-surface-container-low text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+        <div class="col-span-5">Policy Name</div><div class="col-span-2">Category</div><div class="col-span-2">Last Updated</div><div class="col-span-2">Status</div><div class="col-span-1"></div>
+      </div>
+      <div id="policy-table"></div>
+    </div>
+  </div>
+
+  <!-- ── REPORTS ── -->
+  <div class="page" id="page-reports">
+    <div class="mb-8 flex justify-between items-end">
+      <div>
+        <span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant/60 uppercase">Audits & Snapshots</span>
+        <h2 class="text-4xl font-extrabold text-primary font-headline tracking-tight mt-1">Reports</h2>
+      </div>
+      <button onclick="openModal('new-report-modal')" class="admin-only px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:brightness-110 flex items-center gap-2" style="display:none"><span class="material-symbols-outlined text-sm">add</span>Generate New Report</button>
+    </div>
+    <div id="reports-grid" class="grid grid-cols-12 gap-6"></div>
+  </div>
+
+  <!-- ── VAPT REPORTS ── -->
+  <div class="page" id="page-vapt">
+    <div class="mb-8 flex justify-between items-end">
+      <div>
+        <span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant/60 uppercase">Security Testing</span>
+        <h2 class="text-4xl font-extrabold text-primary font-headline tracking-tight mt-1">VAPT Reports</h2>
+        <p class="text-sm text-on-surface-variant/70 mt-1">Vulnerability Assessment &amp; Penetration Testing — download full PDF reports</p>
+      </div>
+      <div>
+        <button onclick="openModal('new-vapt-modal')" class="admin-only px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:brightness-110 flex items-center gap-2" style="display:none"><span class="material-symbols-outlined text-sm">add</span>Add Report</button>
+      </div>
+    </div>
+    <div id="vapt-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+  </div>
+
+  <!-- ── CERTIFICATES ── -->
+  <div class="page" id="page-certificates">
+    <div class="mb-8 flex justify-between items-end">
+      <div>
+        <span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant/60 uppercase">Regulatory Standing</span>
+        <h2 class="text-4xl font-extrabold text-primary font-headline tracking-tight mt-1">Certificates</h2>
+      </div>
+      <div class="ml-auto admin-only" style="display:none"><button onclick="openModal('new-cert-modal')" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:brightness-110 flex items-center gap-2"><span class="material-symbols-outlined text-sm">add</span>Add Certificate</button></div>
+    </div>
+    <div id="certs-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </div>
+
+
+</main>
+
+<!-- FAB (admin only) -->
+<button onclick="openModal('new-policy-modal')" class="admin-only fixed bottom-10 right-10 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-50" style="display:none">
+  <span class="material-symbols-outlined">add</span>
+</button>
+
+<!-- ══════════════ MODALS ══════════════ -->
+<!-- Certificate detail -->
+<div id="cert-modal" class="modal-overlay" onclick="closeModalOutside(event,'cert-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
+    <div class="flex justify-between items-start mb-6">
+      <div class="w-12 h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary"><span class="material-symbols-outlined">verified_user</span></div>
+      <button onclick="closeModal('cert-modal')"><span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">close</span></button>
+    </div>
+    <h3 id="cm-name" class="text-2xl font-bold text-primary font-headline mb-1"></h3>
+    <p id="cm-full" class="text-sm text-on-surface-variant mb-3"></p>
+    <span id="cm-status" class="inline-block px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-full uppercase mb-5"></span>
+    <div class="bg-surface-container-low rounded-lg p-4 mb-6 text-xs text-on-surface-variant space-y-2">
+      <div class="flex justify-between"><span>Issued / Assessed</span><span id="cm-issued" class="font-semibold text-on-surface"></span></div>
+      <div class="flex justify-between"><span>Valid Until</span><span id="cm-expiry" class="font-semibold text-on-surface"></span></div>
+      <div class="flex justify-between"><span>Certifying Body</span><span id="cm-body" class="font-semibold text-on-surface"></span></div>
+    </div>
+    <div class="flex gap-3">
+      <a id="cm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download Certificate</a>
+      <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
+      <button onclick="closeModal('cert-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Policy detail -->
+<div id="policy-modal" class="modal-overlay" onclick="closeModalOutside(event,'policy-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-8">
+    <div class="flex justify-between items-start mb-6">
+      <div class="w-12 h-12 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined">description</span></div>
+      <button onclick="closeModal('policy-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button>
+    </div>
+    <h3 id="pm-title" class="text-2xl font-bold text-primary font-headline mb-1"></h3>
+    <p id="pm-meta" class="text-xs text-on-surface-variant mb-3"></p>
+    <span id="pm-status" class="inline-block px-3 py-1 text-xs font-bold rounded-full uppercase mb-5"></span>
+    <p id="pm-desc" class="text-sm text-on-surface-variant leading-relaxed mb-6"></p>
+    <div class="flex gap-3">
+      <a id="pm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download</a>
+      <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
+      <button onclick="closeModal('policy-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Report detail -->
+<div id="report-modal" class="modal-overlay" onclick="closeModalOutside(event,'report-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-8">
+    <div class="flex justify-between items-start mb-6">
+      <div class="w-12 h-12 rounded-lg bg-secondary-container/30 flex items-center justify-center text-secondary"><span class="material-symbols-outlined">assessment</span></div>
+      <button onclick="closeModal('report-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button>
+    </div>
+    <h3 id="rm-title" class="text-2xl font-bold text-primary font-headline mb-1"></h3>
+    <p id="rm-sub" class="text-xs text-on-surface-variant mb-5"></p>
+    <p id="rm-desc" class="text-sm text-on-surface-variant leading-relaxed mb-6"></p>
+    <div class="flex gap-3">
+      <a id="rm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download Report</a>
+      <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
+      <button onclick="closeModal('report-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- VAPT detail -->
+<div id="vapt-modal" class="modal-overlay" onclick="closeModalOutside(event,'vapt-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-8">
+    <div class="flex justify-between items-start mb-6">
+      <div class="w-12 h-12 rounded-lg bg-error-container flex items-center justify-center text-error"><span class="material-symbols-outlined">bug_report</span></div>
+      <button onclick="closeModal('vapt-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button>
+    </div>
+    <h3 id="vm-title" class="text-2xl font-bold text-primary font-headline mb-1"></h3>
+    <p id="vm-sub" class="text-xs text-on-surface-variant mb-4"></p>
+    <p id="vm-desc" class="text-sm text-on-surface-variant leading-relaxed mb-6"></p>
+    <div class="flex gap-3">
+      <a id="vm-download" href="#" download class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download PDF Report</a>
+      <button onclick="replacePdf()" class="admin-only px-3 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high flex items-center gap-1" style="display:none"><span class="material-symbols-outlined text-sm">swap_horiz</span>Replace</button>
+      <button onclick="closeModal('vapt-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md hover:bg-surface-container-high">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Report -->
+<div id="new-report-modal" class="modal-overlay" onclick="closeModalOutside(event,'new-report-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
+    <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary font-headline">Add New Report</h3><button onclick="closeModal('new-report-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button></div>
+    <div class="space-y-4 mb-6">
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Report Title</label><input id="nr-title" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. ISO 27001 Audit 2026"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Subtitle / Auditor</label><input id="nr-subtitle" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Assessed by Scrut Automation"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Description</label><textarea id="nr-desc" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none resize-none" rows="2" placeholder="Brief summary of the report…"></textarea></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">PDF Document</label><input id="nr-file" type="file" accept=".pdf" class="w-full bg-surface-container-high border-none rounded text-sm py-2 px-3 outline-none text-on-surface-variant"/></div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewReport()" class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110">Add Report</button>
+      <button onclick="closeModal('new-report-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Policy -->
+<div id="new-policy-modal" class="modal-overlay" onclick="closeModalOutside(event,'new-policy-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
+    <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary font-headline">New Policy</h3><button onclick="closeModal('new-policy-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button></div>
+    <div class="space-y-4 mb-6">
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Policy Name</label><input id="new-policy-name" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Remote Work Security Policy"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Category</label><select id="new-policy-cat" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none"><option>Security</option><option>Privacy</option><option>HR</option><option>IT</option><option>Risk</option><option>Operations</option></select></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Description</label><textarea id="new-policy-desc" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none resize-none" rows="2" placeholder="Brief description of this policy…"></textarea></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">PDF Document</label><input id="new-policy-file" type="file" accept=".pdf" class="w-full bg-surface-container-high border-none rounded text-sm py-2 px-3 outline-none text-on-surface-variant"/></div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewPolicy()" class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110">Create Policy</button>
+      <button onclick="closeModal('new-policy-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New VAPT Report -->
+<div id="new-vapt-modal" class="modal-overlay" onclick="closeModalOutside(event,'new-vapt-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
+    <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary font-headline">Add VAPT / Security Report</h3><button onclick="closeModal('new-vapt-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button></div>
+    <div class="space-y-4 mb-6">
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Title</label><input id="nv-title" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Web Application VAPT"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Subtitle / Scope</label><input id="nv-subtitle" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Vantage Circle Web App"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Report ID</label><input id="nv-reportid" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. VAPT-WEB-2026"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Description</label><textarea id="nv-desc" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none resize-none" rows="2" placeholder="Brief summary…"></textarea></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">PDF Report</label><input id="nv-file" type="file" accept=".pdf" class="w-full bg-surface-container-high border-none rounded text-sm py-2 px-3 outline-none text-on-surface-variant"/></div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewVapt()" class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110">Add Report</button>
+      <button onclick="closeModal('new-vapt-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Certificate -->
+<div id="new-cert-modal" class="modal-overlay" onclick="closeModalOutside(event,'new-cert-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
+    <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary font-headline">Add Certificate</h3><button onclick="closeModal('new-cert-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button></div>
+    <div class="space-y-4 mb-6">
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Short Name</label><input id="nc-name" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. ISO 27001"/></div>
+        <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Status</label><select id="nc-status" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none"><option>Active</option><option>Certified</option><option>Compliant</option></select></div>
+      </div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Full Name</label><input id="nc-fullname" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Information Security Management System"/></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Issued Date</label><input id="nc-issued" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Apr 25, 2024"/></div>
+        <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Valid Until</label><input id="nc-expiry" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. Apr 24, 2027"/></div>
+      </div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Certifying Body</label><input id="nc-body" class="w-full bg-surface-container-high border-none rounded text-sm py-2.5 px-3 outline-none" placeholder="e.g. INTERCERT"/></div>
+      <div><label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Certificate PDF</label><input id="nc-file" type="file" accept=".pdf" class="w-full bg-surface-container-high border-none rounded text-sm py-2 px-3 outline-none text-on-surface-variant"/></div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewCert()" class="flex-1 py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110">Add Certificate</button>
+      <button onclick="closeModal('new-cert-modal')" class="px-4 py-2.5 bg-surface-container text-on-surface text-sm font-bold rounded-md">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Help -->
+<div id="help-modal" class="modal-overlay" onclick="closeModalOutside(event,'help-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 flex flex-col" style="max-height:85vh;">
+    <div class="flex justify-between items-center mb-6 flex-shrink-0"><h3 class="text-xl font-bold text-primary font-headline">Help & Support</h3><button onclick="closeModal('help-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button></div>
+    <div class="overflow-y-auto flex-1 pr-1">
+
+    <!-- Documentation -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-primary text-base">menu_book</span><h4 class="font-bold text-sm text-on-surface">Documentation</h4></div>
+      <div class="bg-surface-container-low rounded-xl p-4 text-sm text-on-surface-variant space-y-3 leading-relaxed">
+        <p>The Vantage Circle GRC Ledger is a centralized Governance, Risk and Compliance dashboard built to provide transparent and accessible oversight of Vantage Circle's security posture, compliance certifications, and policy framework.</p>
+        <p>This dashboard is intended for use by employees, clients, and external stakeholders. It offers a single organized view of all governance documentation and does not require a login to view or download any content.</p>
+        <p class="font-semibold text-on-surface text-xs uppercase tracking-wider pt-1">What you can find here</p>
+        <p><span class="font-medium text-on-surface">Policy Library.</span> All active, under review, and draft organizational policies covering information security, data privacy, human resources, and operations.</p>
+        <p><span class="font-medium text-on-surface">Compliance Reports.</span> Audit reports including GDPR readiness assessments, SOC 2 evaluations, and internal compliance reviews, all available as downloadable PDFs.</p>
+        <p><span class="font-medium text-on-surface">VAPT Reports.</span> Vulnerability Assessment and Penetration Testing reports for web applications, mobile platforms, and network infrastructure.</p>
+        <p><span class="font-medium text-on-surface">Certificates.</span> Active compliance certifications held by Vantage Circle, including ISO 27001, ISO 27701, SOC 2 Type II, GDPR, HIPAA, CCPA, and DPDPA.</p>
+        <p>All documents are maintained and updated by the GRC administrator. Clients and stakeholders are welcome to download any report or certificate for due diligence, vendor assessments, or audit purposes.</p>
+        <p class="pt-2 border-t border-outline-variant/20 text-[11px]">Created by <span class="font-semibold text-on-surface">Adin Ankur Saikia</span> (adin.saikia@vantagecircle.com)</p>
+      </div>
+    </div>
+
+    <!-- Contact Support -->
+    <div>
+      <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-primary text-base">support_agent</span><h4 class="font-bold text-sm text-on-surface">Contact Support</h4></div>
+      <div class="space-y-2">
+        <a href="mailto:security@vantagecircle.com" class="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg hover:bg-surface-container transition-colors text-sm text-on-surface-variant">
+          <span class="material-symbols-outlined text-sm text-primary">mail</span>security@vantagecircle.com
+        </a>
+        <a href="mailto:adin.saikia@vantagecircle.com" class="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg hover:bg-surface-container transition-colors text-sm text-on-surface-variant">
+          <span class="material-symbols-outlined text-sm text-primary">mail</span>adin.saikia@vantagecircle.com
+        </a>
+        <a href="mailto:raktim.kakati@vantagecircle.com" class="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg hover:bg-surface-container transition-colors text-sm text-on-surface-variant">
+          <span class="material-symbols-outlined text-sm text-primary">mail</span>raktim.kakati@vantagecircle.com
+        </a>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" class="modal-overlay" onclick="closeModalOutside(event,'login-modal')">
+  <div class="modal-box bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-8">
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined">lock</span></div>
+        <h3 class="text-xl font-bold text-primary font-headline">Admin Login</h3>
+      </div>
+      <button onclick="closeModal('login-modal')"><span class="material-symbols-outlined text-on-surface-variant">close</span></button>
+    </div>
+    <div class="space-y-4 mb-2">
+      <div>
+        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Email</label>
+        <input id="login-user" type="email" autocomplete="username" class="w-full bg-surface-container-high border-none rounded-md text-sm py-2.5 px-3 outline-none focus:ring-2 focus:ring-primary/20" placeholder="you@example.com"/>
+      </div>
+      <div>
+        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Password</label>
+        <input id="login-pass" type="password" autocomplete="current-password" class="w-full bg-surface-container-high border-none rounded-md text-sm py-2.5 px-3 outline-none focus:ring-2 focus:ring-primary/20" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+    </div>
+    <p id="login-error" class="text-xs text-error mb-4" style="display:none">Incorrect username or password.</p>
+    <button onclick="doLogin()" class="w-full py-2.5 bg-primary text-white text-sm font-bold rounded-md hover:brightness-110 transition-all">Login</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="bg-on-surface text-inverse-on-surface text-sm font-medium px-5 py-3 rounded-full shadow-xl"><span id="toast-msg"></span></div>
+
+<!-- Data is loaded from the server API -->
+<script>
+
+// Data is loaded from the server API — do not edit hardcoded arrays here
+let policies = [], reports = [], vaptReports = [], certificates = [];
+
+// ── Helpers
+const statusBadge = (s) => {
+  const map = {
+    'Published':    'bg-secondary-container text-on-secondary-container',
+    'Verified':     'bg-secondary-container text-on-secondary-container',
+    'Complete':     'bg-secondary-container text-on-secondary-container',
+    'Active':       'bg-secondary-container text-on-secondary-container',
+    'Certified':    'bg-secondary-container text-on-secondary-container',
+    'Compliant':    'bg-surface-container-highest text-on-surface-variant',
+    'Under Review': 'bg-surface-container-highest text-on-surface-variant',
+    'In Progress':  'bg-surface-container-highest text-on-surface-variant',
+    'Draft':        'bg-surface-container text-on-surface-variant/50',
+    'Open':         'bg-error-container text-on-error-container',
+    'Mitigating':   'bg-surface-container-highest text-on-surface-variant',
+    'Monitored':    'bg-secondary-container text-on-secondary-container',
+    'Resolved':     'bg-secondary-container text-on-secondary-container',
+  };
+  return map[s] || 'bg-surface-container text-on-surface-variant';
+};
+const sevBadge = (s) => ({
+  'High':   'bg-error-container text-on-error-container',
+  'Medium': 'bg-yellow-100 text-yellow-800',
+  'Low':    'bg-secondary-container text-on-secondary-container',
+  'Critical':'bg-error text-white',
+})[s] || 'bg-surface-container text-on-surface-variant';
+
+const certBg = (color, status) => {
+  if (color === 'green') return { bg:'bg-secondary-container/30 text-secondary', badge:'bg-secondary-container text-on-secondary-container' };
+  return { bg:'bg-primary-container/10 text-primary', badge:'bg-surface-container-highest text-on-surface-variant' };
+};
+
+const findingBadge = (n, cls) => n > 0
+  ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${cls}">${n}</span>`
+  : `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-surface-container text-on-surface-variant/40">${n}</span>`;
+
+// ── Render: Dashboard cert strip
+function renderDashCerts() {
+  document.getElementById('dash-certs').innerHTML = certificates.slice(0,7).map((c) => {
+    const { bg, badge } = certBg(c.color, c.status);
+    return `<div onclick="openCertModal(${c.id})"
+      class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col items-center text-center hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <div class="w-10 h-10 rounded-full ${bg} flex items-center justify-center mb-3">
+        <span class="material-symbols-outlined text-xl">${c.icon}</span></div>
+      <div class="font-bold text-xs text-on-surface mb-1">${c.name}</div>
+      <span class="px-2 py-0.5 ${badge} text-[8px] font-bold rounded-full uppercase">${c.status}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── Render: Dashboard recent policies (first 3)
+function renderDashPolicies() {
+  document.getElementById('dash-policies').innerHTML = policies.slice(0,3).map(p =>
+    `<div onclick="openPolicyModal(${p.id})"
+      class="group flex items-center justify-between p-4 bg-surface rounded-xl hover:bg-surface-container-low transition-all cursor-pointer">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-primary-container/10 flex items-center justify-center rounded-lg text-primary">
+          <span class="material-symbols-outlined">${p.icon}</span></div>
+        <div><h4 class="font-semibold text-on-surface">${p.name}</h4>
+          <p class="text-[11px] text-on-surface-variant">${p.updated}</p></div>
+      </div>
+      <div class="flex items-center gap-6">
+        <span class="px-3 py-1 ${statusBadge(p.status)} text-[10px] font-bold rounded-full uppercase tracking-wider">${p.status}</span>
+        <span class="material-symbols-outlined text-on-surface-variant/30 group-hover:text-primary transition-colors">more_vert</span>
+      </div>
+    </div>`
+  ).join('');
+}
+
+// ── Render: Dashboard recent reports (first 3)
+function renderDashReports() {
+  const icons = {'Verified':'verified','Complete':'done_all','In Progress':'schedule'};
+  document.getElementById('dash-reports').innerHTML = reports.slice(0,3).map(r =>
+    `<div onclick="openReportModal(${r.id})"
+      class="bg-white/5 backdrop-blur-md rounded-lg p-4 flex items-center justify-between border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
+      <div><div class="text-sm font-semibold">${r.title}</div>
+        <div class="text-[10px] text-white/40">${r.subtitle}</div></div>
+      <span class="material-symbols-outlined text-tertiary-fixed text-sm">${icons[r.status]||'info'}</span>
+    </div>`
+  ).join('');
+}
+
+// ── Render: Policies full table
+function renderPolicyTable(filter='all') {
+  const filtered = filter === 'all' ? policies : policies.filter(p => p.status === filter);
+  document.getElementById('policy-table').innerHTML = filtered.map((p, i) =>
+    `<div onclick="openPolicyModal(${p.id})"
+      class="grid grid-cols-12 px-6 py-4 hover:bg-surface-container-low transition-all cursor-pointer ${i < filtered.length-1 ? 'border-b border-outline-variant/10' : ''}">
+      <div class="col-span-5 flex items-center gap-3">
+        <div class="w-8 h-8 bg-primary-container/10 flex items-center justify-center rounded text-primary">
+          <span class="material-symbols-outlined text-sm">${p.icon}</span></div>
+        <span class="font-semibold text-sm">${p.name}</span></div>
+      <div class="col-span-2 flex items-center text-xs text-on-surface-variant">${p.category}</div>
+      <div class="col-span-2 flex items-center text-xs text-on-surface-variant">${p.updated}</div>
+      <div class="col-span-2 flex items-center">
+        <span class="px-2.5 py-1 ${statusBadge(p.status)} text-[9px] font-bold rounded-full uppercase">${p.status}</span></div>
+      <div class="col-span-1 flex items-center justify-end gap-1">
+        <button class="admin-only text-on-surface-variant/30 hover:text-error transition-colors" style="display:none" onclick="event.stopPropagation();deleteItem('policies',${p.id},'${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-outlined text-sm">delete</span></button>
+      </div>
+    </div>`
+  ).join('') || '<div class="px-6 py-8 text-center text-sm text-on-surface-variant">No policies match this filter.</div>';
+}
+
+// ── Render: Reports grid
+function renderReports() {
+  const bgMap = {'Verified':'bg-secondary-container/30 text-secondary','Complete':'bg-secondary-container/30 text-secondary','In Progress':'bg-primary-container/10 text-primary'};
+  document.getElementById('reports-grid').innerHTML = reports.map(r =>
+    `<div onclick="openReportModal(${r.id})"
+      class="col-span-12 md:col-span-6 lg:col-span-4 bg-surface-container-lowest rounded-lg p-6 shadow-sm hover:shadow-md transition-all cursor-pointer border border-outline-variant/10 hover:border-primary/20">
+      <div class="flex justify-between items-start mb-4">
+        <div class="w-10 h-10 ${bgMap[r.status]||'bg-primary-container/10 text-primary'} rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined">${r.icon}</span></div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 ${statusBadge(r.status)} text-[9px] font-bold rounded-full uppercase">${r.status}</span>
+          <button class="admin-only text-on-surface-variant/40 hover:text-error transition-colors" style="display:none" onclick="event.stopPropagation();deleteItem('reports',${r.id},'${r.title.replace(/'/g,"\\'")}')"><span class="material-symbols-outlined text-sm">delete</span></button>
+        </div>
+      </div>
+      <h4 class="font-bold text-on-surface mb-1">${r.title}</h4>
+      <p class="text-xs text-on-surface-variant mb-4">${r.subtitle}</p>
+      <div class="text-[10px] text-on-surface-variant/60">${r.date}</div>
+    </div>`
+  ).join('');
+}
+
+// ── Render: VAPT grid
+function renderVapt() {
+  document.getElementById('vapt-grid').innerHTML = vaptReports.map(v => {
+    return `<div class="vapt-card bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden"
+      onclick="openVaptModal(${v.id})">
+      <!-- Header -->
+      <div class="bg-primary p-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary-container to-primary opacity-60"></div>
+        <div class="relative z-10 flex justify-between items-start">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="material-symbols-outlined text-tertiary-fixed text-sm">bug_report</span>
+              <span class="text-[10px] font-bold text-white/60 uppercase tracking-wider">${v.reportId}</span>
+            </div>
+            <h3 class="text-lg font-bold text-white font-headline">${v.title}</h3>
+            <p class="text-xs text-white/60 mt-0.5">${v.subtitle}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 bg-secondary-fixed text-on-secondary-fixed text-[9px] font-bold rounded-full uppercase">${v.status}</span>
+            <button class="admin-only text-white/50 hover:text-white transition-colors" style="display:none" onclick="event.stopPropagation();deleteItem('vapt',${v.id},'${v.title.replace(/'/g,"\\'")}')"><span class="material-symbols-outlined text-sm">delete</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="p-5">
+        <p class="text-xs text-on-surface-variant leading-relaxed mb-5">${v.desc}</p>
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] text-on-surface-variant/60">${v.date}</span>
+          <a href="/uploads/${v.pdfFile}" download onclick="event.stopPropagation();showToast('Downloading ${v.title} PDF…')"
+            class="flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:brightness-110 transition-all">
+            <span class="material-symbols-outlined text-sm">picture_as_pdf</span>Download PDF
+          </a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Render: Certificates full page
+function renderCerts() {
+  document.getElementById('certs-grid').innerHTML = certificates.map((c) => {
+    const { bg, badge } = certBg(c.color, c.status);
+    return `<div onclick="openCertModal(${c.id})"
+      class="relative bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col items-center text-center hover:shadow-md hover:border-primary/30 transition-all cursor-pointer">
+      <button class="admin-only absolute top-2 right-2 text-on-surface-variant/30 hover:text-error transition-colors" style="display:none" onclick="event.stopPropagation();deleteItem('certificates',${c.id},'${c.name.replace(/'/g,"\\'")}')"><span class="material-symbols-outlined text-sm">delete</span></button>
+      <div class="w-14 h-14 rounded-full ${bg} flex items-center justify-center mb-4">
+        <span class="material-symbols-outlined text-2xl">${c.icon}</span></div>
+      <div class="font-bold text-sm text-on-surface mb-1">${c.name}</div>
+      <div class="text-xs text-on-surface-variant mb-3">${c.fullName}</div>
+      <span class="px-3 py-1 ${badge} text-[9px] font-bold rounded-full uppercase">${c.status}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── Render: Risk table
+function renderRisks() {
+  document.getElementById('risk-table').innerHTML = risks.map((r, i) =>
+    `<div class="grid grid-cols-12 px-6 py-4 hover:bg-surface-container-low transition-all cursor-pointer ${i < risks.length-1 ? 'border-b border-outline-variant/10' : ''}"
+      onclick="showToast('Risk: ${r.risk}')">
+      <div class="col-span-4 flex items-center font-semibold text-sm">${r.risk}</div>
+      <div class="col-span-2 flex items-center text-xs text-on-surface-variant">${r.category}</div>
+      <div class="col-span-2 flex items-center"><span class="px-2.5 py-1 ${sevBadge(r.severity)} text-[9px] font-bold rounded-full uppercase">${r.severity}</span></div>
+      <div class="col-span-2 flex items-center text-xs text-on-surface-variant">${r.owner}</div>
+      <div class="col-span-2 flex items-center"><span class="px-2.5 py-1 ${statusBadge(r.riskStatus)} text-[9px] font-bold rounded-full uppercase">${r.riskStatus}</span></div>
+    </div>`
+  ).join('');
+}
+
+// ── Render: Dashboard counters
+function renderDashCounts() {
+  document.getElementById('dash-policy-count').textContent = policies.length;
+  document.getElementById('dash-report-count').textContent = reports.length + vaptReports.length;
+}
+
+// ── Module-level current item tracker
+let currentItem = null;
+
+// ── Modal openers
+function openCertModal(id) {
+  const c = certificates.find(x => x.id === id);
+  if (!c) return;
+  const folder = c.pdfFile ? c.pdfFile.split('/')[0] : 'certificates';
+  currentItem = { collection:'certificates', id:c.id, folder };
+  document.getElementById('cm-name').textContent   = c.name;
+  document.getElementById('cm-status').textContent = c.status;
+  document.getElementById('cm-full').textContent   = c.fullName;
+  document.getElementById('cm-issued').textContent = c.issuedDate || '—';
+  document.getElementById('cm-expiry').textContent = c.expiryDate || '—';
+  document.getElementById('cm-body').textContent   = c.certBody   || '—';
+  const dl = document.getElementById('cm-download');
+  dl.href = c.pdfFile ? `/uploads/${c.pdfFile}` : '#';
+  dl.setAttribute('download', c.pdfFile ? c.pdfFile.split('/').pop() : '');
+  openModal('cert-modal');
+}
+function openPolicyModal(id) {
+  const p = policies.find(x => x.id === id);
+  if (!p) return;
+  currentItem = { collection:'policies', id:p.id, folder:'policies' };
+  document.getElementById('pm-title').textContent = p.name;
+  document.getElementById('pm-meta').textContent  = p.updated;
+  document.getElementById('pm-desc').textContent  = p.desc;
+  const el = document.getElementById('pm-status');
+  el.textContent = p.status;
+  el.className = `inline-block px-3 py-1 text-xs font-bold rounded-full uppercase mb-5 ${statusBadge(p.status)}`;
+  const dl = document.getElementById('pm-download');
+  dl.href = p.pdfFile ? `/uploads/${p.pdfFile}` : '#';
+  dl.setAttribute('download', p.pdfFile ? p.pdfFile.split('/').pop() : '');
+  openModal('policy-modal');
+}
+function openReportModal(id) {
+  const r = reports.find(x => x.id === id);
+  if (!r) return;
+  currentItem = { collection:'reports', id:r.id, folder:'reports' };
+  document.getElementById('rm-title').textContent = r.title;
+  document.getElementById('rm-sub').textContent   = r.subtitle;
+  document.getElementById('rm-desc').textContent  = r.desc;
+  const dl = document.getElementById('rm-download');
+  dl.href = r.pdfFile ? `/uploads/${r.pdfFile}` : '#';
+  dl.setAttribute('download', r.pdfFile ? r.pdfFile.split('/').pop() : '');
+  openModal('report-modal');
+}
+function openVaptModal(id) {
+  const v = vaptReports.find(x => x.id === id);
+  if (!v) return;
+  const folder = v.pdfFile ? v.pdfFile.split('/')[0] : 'vapt';
+  currentItem = { collection:'vapt', id:v.id, folder };
+  document.getElementById('vm-title').textContent = v.title;
+  document.getElementById('vm-sub').textContent   = `${v.reportId} · ${v.date}`;
+  document.getElementById('vm-desc').textContent  = v.desc;
+  document.getElementById('vm-download').href     = `/uploads/${v.pdfFile}`;
+  document.getElementById('vm-download').setAttribute('download', v.pdfFile.split('/').pop());
+  openModal('vapt-modal');
+}
+
+// ── Today's date helpers
+function todayStr() {
+  return new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function todayMonthYear() {
+  return new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' });
+}
+
+// ── Upload helper
+async function uploadFile(fileInput, folder) {
+  if (!fileInput || !fileInput.files[0]) return '';
+  const form = new FormData();
+  form.append('file', fileInput.files[0]);
+  const res  = await fetch(`/api/upload?folder=${folder}`, { method:'POST', body:form });
+  const data = await res.json();
+  return data.relativePath || '';
+}
+
+// ── Data loading
+async function loadData() {
+  const res  = await fetch('/api/data');
+  const data = await res.json();
+  policies     = data.policies     || [];
+  reports      = data.reports      || [];
+  vaptReports  = data.vapt         || [];
+  certificates = data.certificates || [];
+  renderAll();
+}
+
+// ── Delete item
+async function deleteItem(collection, id, name) {
+  if (!confirm(`Delete "${name}"?\nThis cannot be undone.`)) return;
+  await fetch(`/api/${collection}/${id}`, { method:'DELETE' });
+  await loadData();
+  showToast(`"${name}" deleted`);
+}
+
+// ── Replace PDF (opens file picker, uploads, updates date)
+function replacePdf() {
+  if (!currentItem) return;
+  const input = document.createElement('input');
+  input.type  = 'file';
+  input.accept = '.pdf';
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const form = new FormData();
+    form.append('file', file);
+    const folder = currentItem.folder;
+    const upRes  = await fetch(`/api/upload?folder=${folder}`, { method:'POST', body:form });
+    const upData = await upRes.json();
+    const pdfFile = upData.relativePath;
+    const updates = { pdfFile };
+    if (currentItem.collection === 'policies')          updates.updated    = todayStr();
+    else if (currentItem.collection === 'reports')      updates.date       = todayMonthYear();
+    else if (currentItem.collection === 'vapt')         updates.date       = todayStr();
+    else if (currentItem.collection === 'certificates') updates.issuedDate = todayStr();
+    await fetch(`/api/${currentItem.collection}/${currentItem.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates)
+    });
+    await loadData();
+    const modalMap = { policies:'policy-modal', reports:'report-modal', vapt:'vapt-modal', certificates:'cert-modal' };
+    closeModal(modalMap[currentItem.collection] || 'policy-modal');
+    showToast('PDF replaced — date updated to today');
+  };
+  input.click();
+}
+
+// ── Add new policy from form
+async function addNewPolicy() {
+  const name  = document.getElementById('new-policy-name').value.trim();
+  const cat   = document.getElementById('new-policy-cat').value;
+  const desc  = document.getElementById('new-policy-desc').value.trim();
+  if (!name) { showToast('Please enter a policy name'); return; }
+  const pdfFile = await uploadFile(document.getElementById('new-policy-file'), 'policies');
+  const item = { name, status:'Published', category:cat, updated:todayStr(), desc:desc||'No description provided.', icon:'description', pdfFile };
+  await fetch('/api/policies', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) });
+  await loadData();
+  closeModal('new-policy-modal');
+  showToast(`"${name}" added`);
+  document.getElementById('new-policy-name').value = '';
+  document.getElementById('new-policy-desc').value = '';
+  document.getElementById('new-policy-file').value = '';
+}
+
+// ── Add new report from form
+async function addNewReport() {
+  const title    = document.getElementById('nr-title').value.trim();
+  const subtitle = document.getElementById('nr-subtitle').value.trim();
+  const desc     = document.getElementById('nr-desc').value.trim();
+  if (!title) { showToast('Please enter a title'); return; }
+  const pdfFile = await uploadFile(document.getElementById('nr-file'), 'reports');
+  const item = { title, subtitle, status:'Complete', date:todayMonthYear(), icon:'assessment', pdfFile, desc:desc||'' };
+  await fetch('/api/reports', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) });
+  await loadData();
+  closeModal('new-report-modal');
+  showToast(`"${title}" added`);
+}
+
+// ── Add new VAPT report from form
+async function addNewVapt() {
+  const title    = document.getElementById('nv-title').value.trim();
+  const subtitle = document.getElementById('nv-subtitle').value.trim();
+  const reportId = document.getElementById('nv-reportid').value.trim();
+  const desc     = document.getElementById('nv-desc').value.trim();
+  if (!title) { showToast('Please enter a title'); return; }
+  const pdfFile = await uploadFile(document.getElementById('nv-file'), 'vapt');
+  const item = { title, subtitle, date:todayStr(), reportId, pdfFile, status:'Complete', findings:{critical:0,high:0,medium:0,low:0}, desc:desc||'' };
+  await fetch('/api/vapt', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) });
+  await loadData();
+  closeModal('new-vapt-modal');
+  showToast(`"${title}" added`);
+}
+
+// ── Add new certificate from form
+async function addNewCert() {
+  const name     = document.getElementById('nc-name').value.trim();
+  const status   = document.getElementById('nc-status').value;
+  const fullName = document.getElementById('nc-fullname').value.trim();
+  const issued   = document.getElementById('nc-issued').value.trim();
+  const expiry   = document.getElementById('nc-expiry').value.trim();
+  const body     = document.getElementById('nc-body').value.trim();
+  if (!name) { showToast('Please enter a name'); return; }
+  const pdfFile = await uploadFile(document.getElementById('nc-file'), 'certificates');
+  const item = { name, status, fullName, icon:'verified', color:'green', pdfFile, issuedDate:issued||todayStr(), expiryDate:expiry||'—', certBody:body||'—' };
+  await fetch('/api/certificates', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) });
+  await loadData();
+  closeModal('new-cert-modal');
+  showToast(`"${name}" added`);
+}
+
+// ── Navigation
+const pageTitles = { dashboard:'Dashboard', policies:'Policy Library', reports:'Reports', vapt:'VAPT Reports', certificates:'Certificates' };
+function navigate(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+pageId).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active'); l.classList.add('text-slate-500'); });
+  const a = document.querySelector(`[data-page="${pageId}"]`);
+  if (a) { a.classList.add('active'); a.classList.remove('text-slate-500'); }
+  document.getElementById('page-title').textContent = pageTitles[pageId]||'Dashboard';
+  window.scrollTo(0,0);
+  closeSearch();
+}
+document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); navigate(l.dataset.page); }));
+
+// ── Search
+const searchInput = document.getElementById('search-input');
+const searchDD    = document.getElementById('search-dropdown');
+function getSearchItems() {
+  return [
+    ...policies.map(p     => ({ label:p.name,    sub:`Policy · ${p.status}`,      page:'policies',     icon:'policy'        })),
+    ...reports.map(r      => ({ label:r.title,   sub:`Report · ${r.status}`,      page:'reports',      icon:'assessment'    })),
+    ...vaptReports.map(v  => ({ label:v.title,   sub:`VAPT · ${v.date}`,          page:'vapt',         icon:'security'      })),
+    ...certificates.map(c => ({ label:c.name,    sub:`Certificate · ${c.status}`, page:'certificates', icon:'verified_user' })),
+  ];
+}
+function renderSearch(q) {
+  const searchItems = getSearchItems();
+  const res = q ? searchItems.filter(i => i.label.toLowerCase().includes(q.toLowerCase())) : searchItems.slice(0,5);
+  document.getElementById('search-results').innerHTML = res.slice(0,6).map(i =>
+    `<div class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low cursor-pointer transition-colors" onclick="navigate('${i.page}');closeSearch()">
+      <span class="material-symbols-outlined text-primary text-sm">${i.icon}</span>
+      <div><div class="text-sm font-medium">${i.label}</div><div class="text-[10px] text-on-surface-variant">${i.sub}</div></div>
+    </div>`
+  ).join('') || '<div class="px-4 py-3 text-sm text-on-surface-variant">No results found</div>';
+  searchDD.classList.add('open');
+}
+searchInput.addEventListener('focus', () => renderSearch(searchInput.value));
+searchInput.addEventListener('input', () => renderSearch(searchInput.value));
+document.addEventListener('click', e => { if (!searchInput.contains(e.target) && !searchDD.contains(e.target)) closeSearch(); });
+function closeSearch() { searchDD.classList.remove('open'); }
+
+// ── Filter chips (Policies page)
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    renderPolicyTable(chip.dataset.filter);
+  });
+});
+
+// ── Modals
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModalOutside(e, id) { if (e.target.id === id) closeModal(id); }
+document.addEventListener('keydown', e => { if (e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
+
+// ── Toast
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast').classList.add('show');
+  toastTimer = setTimeout(() => document.getElementById('toast').classList.remove('show'), 2500);
+}
+
+// ── Boot: render everything
+function renderAll() {
+  renderDashCounts();
+  renderDashCerts();
+  renderDashPolicies();
+  renderDashReports();
+  renderPolicyTable();
+  renderReports();
+  renderVapt();
+  renderCerts();
+}
+
+// ── Auth ──────────────────────────────────────────────────────
+function setAdminUI(isAdmin) {
+  document.getElementById('sidebar-logged-in').style.display  = isAdmin ? 'block' : 'none';
+  document.getElementById('sidebar-logged-out').style.display = isAdmin ? 'none'  : 'block';
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = isAdmin ? '' : 'none';
+  });
+}
+
+async function doLogin() {
+  const username = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pass').value;
+  const errEl    = document.getElementById('login-error');
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    if (res.ok) {
+      setAdminUI(true);
+      closeModal('login-modal');
+      document.getElementById('login-pass').value = '';
+      errEl.style.display = 'none';
+      showToast('Logged in as Admin');
+    } else {
+      errEl.style.display = 'block';
+    }
+  } catch {
+    errEl.style.display = 'block';
+  }
+}
+
+async function doLogout() {
+  await fetch('/api/logout', { method: 'POST' });
+  setAdminUI(false);
+  showToast('Logged out');
+}
+
+// ── Real-time updates via Server-Sent Events
+function connectSSE() {
+  const es = new EventSource('/api/events');
+  es.addEventListener('change', async (e) => {
+    const { action, collection, item, id } = JSON.parse(e.data);
+    const map = { policies: 'policies', reports: 'reports', vapt: 'vaptReports', certificates: 'certificates' };
+    const varName = map[collection];
+    if (!varName) return;
+    const arr = eval(varName); // reference to the live array
+    if (action === 'added') {
+      if (!arr.find(x => x.id === item.id)) arr.unshift(item);
+    } else if (action === 'updated') {
+      const idx = arr.findIndex(x => x.id === item.id);
+      if (idx !== -1) arr[idx] = item; else arr.unshift(item);
+    } else if (action === 'deleted') {
+      const idx = arr.findIndex(x => x.id === id);
+      if (idx !== -1) arr.splice(idx, 1);
+    }
+    renderAll();
+    const labels = { added: 'New item added', updated: 'Item updated', deleted: 'Item removed' };
+    showToast('🔔 ' + (labels[action] || 'Dashboard updated'));
+  });
+  es.onerror = () => { es.close(); setTimeout(connectSSE, 5000); }; // auto-reconnect
+}
+
+// ── Boot: load data from server and check session
+async function init() {
+  const [dataRes, meRes] = await Promise.all([fetch('/api/data'), fetch('/api/me')]);
+  const data = await dataRes.json();
+  const me   = await meRes.json();
+  policies     = data.policies     || [];
+  reports      = data.reports      || [];
+  vaptReports  = data.vapt         || [];
+  certificates = data.certificates || [];
+  renderAll();
+  setAdminUI(me.isAdmin);
+  connectSSE();
+}
+init();
+</script>
+</body>
+</html>

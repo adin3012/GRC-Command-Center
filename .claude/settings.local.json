@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew install:*)",
+      "Bash(pdftotext --version)",
+      "Bash(done)",
+      "Bash(pdftotext '/Users/apple/Desktop/GRC Dashboard/uploads/reports/Bargain_Technologies_-_GDPR_Audit_Report.pdf' -)",
+      "Bash(grep -v \"^$\")",
+      "Bash(pdftotext '/Users/apple/Desktop/GRC Dashboard/uploads/SAST/Vantage_Circle_Source_Code_Review_Audit_Level_2_Report.pdf' -)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/uploads/certificates/ISO_27001_Certificate.pdf\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/uploads/vapt/Android_App_VAPT_Feb2025.pdf\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/uploads/policies/Vantagecircle_Acceptable_Usage_Policy.docx%20\\(1\\)%20\\(2\\).pdf\")",
+      "Bash(node init-data.js)",
+      "Bash(rm init-data.js)",
+      "Bash(node -c server.js)",
+      "Bash(pkill -f \"node server.js\")",
+      "Bash(curl -s http://localhost:3000/api/me)",
+      "Bash(curl -s http://localhost:3000/api/data)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f''''Policies: {len\\(d[\"\"policies\"\"]\\)}, Reports: {len\\(d[\"\"reports\"\"]\\)}, VAPT: {len\\(d[\"\"vapt\"\"]\\)}, Certificates: {len\\(d[\"\"certificates\"\"]\\)}''''\\)\")",
+      "Bash(gh auth:*)",
+      "Bash(gh repo:*)"
+    ]
+  }
+}
