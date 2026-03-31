@@ -17,9 +17,18 @@ const path     = require('path');
 const url      = require('url');
 const crypto   = require('crypto');
 
+// ── Load credentials from .env
+const envFile = path.join(__dirname, '.env');
+if (fs.existsSync(envFile)) {
+  fs.readFileSync(envFile, 'utf8').split('\n').forEach(line => {
+    const [k, ...v] = line.split('=');
+    if (k && v.length) process.env[k.trim()] = v.join('=').trim();
+  });
+}
+
 // ── Admin credentials
-const ADMIN_USERNAME = 'adin.saikia@gmail.com';
-const ADMIN_PASSWORD = 'adin@vc1234';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || '';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 // ── In-memory sessions (cleared on server restart)
 const sessions = new Map();
