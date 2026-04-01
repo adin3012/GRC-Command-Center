@@ -611,7 +611,7 @@
       "color": "green",
       "pdfFile": "certificates/ISO_27701_Certificate.pdf",
       "issuedDate": "Apr 25, 2024",
-      "expiryDate": "Apr 24, 2026",
+      "expiryDate": "Apr 24, 2027",
       "certBody": "INTERCERT"
     },
     {
@@ -623,7 +623,7 @@
       "color": "green",
       "pdfFile": "certificates/SOC2_TypeII_Certificate.pdf",
       "issuedDate": "Apr 1, 2024",
-      "expiryDate": "Mar 31, 2025",
+      "expiryDate": "Mar 31, 2026",
       "certBody": "Accorp Partners"
     },
     {
@@ -634,8 +634,8 @@
       "icon": "medical_services",
       "color": "green",
       "pdfFile": "certificates/HIPAA_Compliance_Audit_Report.pdf",
-      "issuedDate": "Feb 5, 2026",
-      "expiryDate": "Feb 17, 2026",
+      "issuedDate": "Feb 17, 2026",
+      "expiryDate": "Feb 17, 2027",
       "certBody": "Scrut Automation"
     },
     {
@@ -647,7 +647,7 @@
       "color": "green",
       "pdfFile": "certificates/CCPA_Audit_Report.pdf",
       "issuedDate": "Feb 5, 2026",
-      "expiryDate": "—",
+      "expiryDate": "Feb 5, 2027",
       "certBody": "Scrut Automation"
     },
     {
@@ -659,7 +659,7 @@
       "color": "green",
       "pdfFile": "certificates/DPDPA_Audit_Report.pdf",
       "issuedDate": "Feb 5, 2026",
-      "expiryDate": "—",
+      "expiryDate": "Feb 5, 2027",
       "certBody": "Scrut Automation"
     },
     {
@@ -671,7 +671,7 @@
       "color": "green",
       "pdfFile": "reports/GDPR_Audit_Report_2025.pdf",
       "issuedDate": "May 28, 2025",
-      "expiryDate": "—",
+      "expiryDate": "May 28, 2026",
       "certBody": "Scrut Automation"
     }
   ],
