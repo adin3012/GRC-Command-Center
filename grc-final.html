@@ -55,7 +55,10 @@ tailwind.config = {
 <body class="bg-surface text-on-surface">
 
 <!-- ══════════════ SIDEBAR ══════════════ -->
-<aside class="flex flex-col h-screen fixed left-0 top-0 z-40 w-64 bg-slate-50 font-['Inter'] text-sm font-medium tracking-tight">
+<!-- Mobile overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden" onclick="closeSidebar()"></div>
+
+<aside id="sidebar" class="flex flex-col h-screen fixed left-0 top-0 z-40 w-64 bg-slate-50 font-['Inter'] text-sm font-medium tracking-tight -translate-x-full md:translate-x-0 transition-transform duration-300">
   <div class="flex flex-col items-start justify-center h-16 px-8 border-b border-slate-200 mb-6">
     <div class="font-['Manrope'] text-xs font-bold tracking-widest uppercase leading-none mb-1" style="color:#3D3D5C">Vantage Circle</div>
     <div class="font-['Manrope'] text-base font-extrabold leading-none tracking-tight" style="color:#3D3D5C">GRC Command Center</div>
@@ -91,7 +94,11 @@ tailwind.config = {
 </aside>
 
 <!-- ══════════════ TOP NAV ══════════════ -->
-<header class="flex justify-between items-center h-16 ml-64 px-8 w-[calc(100%-16rem)] bg-white/85 backdrop-blur-xl shadow-sm shadow-slate-200/50 fixed top-0 z-30">
+<header class="flex justify-between items-center h-16 md:ml-64 px-4 md:px-8 w-full md:w-[calc(100%-16rem)] bg-white/85 backdrop-blur-xl shadow-sm shadow-slate-200/50 fixed top-0 z-30">
+  <!-- Hamburger (mobile only) -->
+  <button class="md:hidden mr-3 text-slate-500 hover:text-indigo-700" onclick="openSidebar()">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
   <div class="flex items-center flex-1 max-w-xl relative">
     <div class="relative w-full rounded-md">
       <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-sm">search</span>
@@ -112,7 +119,7 @@ tailwind.config = {
 </header>
 
 <!-- ══════════════ MAIN ══════════════ -->
-<main class="ml-64 pt-24 px-12 pb-12 min-h-screen bg-surface">
+<main class="md:ml-64 pt-24 px-4 md:px-12 pb-12 min-h-screen bg-surface">
 
   <!-- ── DASHBOARD ── -->
   <div class="page active" id="page-dashboard">
@@ -125,12 +132,10 @@ tailwind.config = {
         <div class="flex-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm">
           <div class="text-on-surface-variant text-xs font-medium mb-1">Total Policies</div>
           <div id="dash-policy-count" class="text-3xl font-bold text-primary font-headline">0</div>
-          <div class="mt-2 flex items-center text-[10px] text-secondary font-bold"><span class="material-symbols-outlined text-sm mr-1">trending_up</span>+4 this month</div>
         </div>
         <div class="flex-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm">
           <div class="text-on-surface-variant text-xs font-medium mb-1">Total Reports</div>
           <div id="dash-report-count" class="text-3xl font-bold text-primary font-headline">0</div>
-          <div class="mt-2 flex items-center text-[10px] text-secondary font-bold"><span class="material-symbols-outlined text-sm mr-1">check_circle</span>100% On-time</div>
         </div>
       </div>
     </section>
@@ -184,7 +189,7 @@ tailwind.config = {
       <div class="ml-auto admin-only" style="display:none"><button onclick="openModal('new-policy-modal')" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:brightness-110 flex items-center gap-2"><span class="material-symbols-outlined text-sm">add</span>New Policy</button></div>
     </div>
     <div class="bg-surface-container-lowest rounded-lg shadow-sm overflow-hidden">
-      <div class="grid grid-cols-12 px-6 py-3 bg-surface-container-low text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+      <div class="hidden md:grid grid-cols-12 px-6 py-3 bg-surface-container-low text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
         <div class="col-span-4">Policy Name</div><div class="col-span-2">Category</div><div class="col-span-2">Last Updated</div><div class="col-span-2">Status</div><div class="col-span-2 admin-only" style="display:none">Actions</div>
       </div>
       <div id="policy-table"></div>
@@ -712,6 +717,7 @@ function renderRisks() {
 function renderDashCounts() {
   document.getElementById('dash-policy-count').textContent = policies.length;
   document.getElementById('dash-report-count').textContent = reports.length + vaptReports.length;
+
 }
 
 // ── Module-level current item tracker
@@ -959,6 +965,15 @@ async function addNewCert() {
 
 // ── Navigation
 const pageTitles = { dashboard:'GRC Command Center', policies:'Policy Library', reports:'Reports', vapt:'VAPT Reports', certificates:'Certificates' };
+function openSidebar() {
+  document.getElementById('sidebar').classList.remove('-translate-x-full');
+  document.getElementById('sidebar-overlay').classList.remove('hidden');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.add('-translate-x-full');
+  document.getElementById('sidebar-overlay').classList.add('hidden');
+}
+
 function navigate(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+pageId).classList.add('active');
@@ -969,7 +984,7 @@ function navigate(pageId) {
   window.scrollTo(0,0);
   closeSearch();
 }
-document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); navigate(l.dataset.page); }));
+document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); navigate(l.dataset.page); closeSidebar(); }));
 
 // ── Search
 const searchInput = document.getElementById('search-input');
