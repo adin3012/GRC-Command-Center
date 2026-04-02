@@ -53,7 +53,7 @@ function isAdmin(req) {
   return true;
 }
 
-const PORT      = 3000;
+const PORT      = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 const LOGO_DIR   = path.join(__dirname, 'logo');

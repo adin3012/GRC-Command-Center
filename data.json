@@ -617,10 +617,10 @@
     {
       "id": 3,
       "name": "SOC 2 Type II",
-      "status": "Active",
+      "status": "Expired",
       "fullName": "Security, Availability & Confidentiality",
       "icon": "lock",
-      "color": "green",
+      "color": "red",
       "pdfFile": "certificates/SOC2_TypeII_Certificate.pdf",
       "issuedDate": "Apr 1, 2025",
       "expiryDate": "Mar 31, 2026",
