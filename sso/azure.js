@@ -1,21 +1,28 @@
 const { ConfidentialClientApplication } = require('@azure/msal-node');
 
-const config = {
-  auth: {
-    clientId: process.env.AZURE_CLIENT_ID || 'YOUR_CLIENT_ID',
-    clientSecret: process.env.AZURE_CLIENT_SECRET || 'YOUR_CLIENT_SECRET',
-    authority: `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID || 'YOUR_TENANT_ID'}`
-  },
-  system: {
-    loggerOptions: {
-      loggerCallback(loglevel, message) {
-        console.log('[MSAL]', message);
+function getConfig() {
+  return {
+    auth: {
+      clientId:     process.env.AZURE_CLIENT_ID     || '',
+      clientSecret: process.env.AZURE_CLIENT_SECRET || '',
+      authority:    `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID || 'common'}`
+    },
+    system: {
+      loggerOptions: {
+        loggerCallback(loglevel, message) {
+          console.log('[MSAL]', message);
+        }
       }
     }
-  }
-};
+  };
+}
 
-const msalClient = new ConfidentialClientApplication(config);
+// Lazy-initialize — only created when SSO is actually used
+let msalClient = null;
+function getMsalClient() {
+  if (!msalClient) msalClient = new ConfidentialClientApplication(getConfig());
+  return msalClient;
+}
 
 const tokenRequest = {
   scopes: ['User.Read']
@@ -27,7 +34,7 @@ const graphConfig = {
 
 async function getTokenFromCode(authCode, redirectUri) {
   try {
-    const tokenResponse = await msalClient.acquireTokenByCode({
+    const tokenResponse = await getMsalClient().acquireTokenByCode({
       code: authCode,
       scopes: ['User.Read'],
       redirectUri: redirectUri
@@ -64,7 +71,7 @@ function generateAzureAuthUrl(redirectUri) {
 }
 
 module.exports = {
-  msalClient,
+  getMsalClient,
   getTokenFromCode,
   getUserProfile,
   generateAzureAuthUrl,
