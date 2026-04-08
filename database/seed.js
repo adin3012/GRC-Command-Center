@@ -156,8 +156,9 @@ const seedAdminUser = () => {
   const existing = get('SELECT COUNT(*) as count FROM users');
   if (existing?.count > 0) return;
 
-  const hash = bcrypt.hashSync('admin123', 10);
-  run('INSERT INTO users (email, password_hash, name, role) VALUES (?, ?, ?, ?)', ['admin@vantagecircle.com', hash, 'Admin User', 'admin']);
+  const hash = bcrypt.hashSync('vantage@123', 10);
+  run('INSERT INTO users (email, password_hash, name, role) VALUES (?, ?, ?, ?)', ['adin.saikia@vantagecircle.com', hash, 'Adin Saikia', 'admin']);
+  run('INSERT INTO users (email, password_hash, name, role) VALUES (?, ?, ?, ?)', ['security@vantagecircle.com', hash, 'Security Team', 'admin']);
 };
 
 async function runSeeds() {

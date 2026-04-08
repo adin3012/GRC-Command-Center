@@ -473,9 +473,10 @@ async function startServer() {
       console.log('║  Stop:      Ctrl + C                              ║');
       console.log('╚══════════════════════════════════════════════════════╝');
       console.log('');
-      console.log('Default admin credentials:');
-      console.log('  Email:    admin@vantagecircle.com');
-      console.log('  Password: admin123');
+      console.log('Admin credentials:');
+      console.log('  Email:    adin.saikia@vantagecircle.com');
+      console.log('  Email:    security@vantagecircle.com');
+      console.log('  Password: vantage@123');
       console.log('');
     });
   } catch (err) {
