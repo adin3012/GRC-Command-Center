@@ -1,0 +1,2333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRC Command Center - Enterprise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+            success: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+            },
+            warning: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              200: '#fde68a',
+              300: '#fcd34d',
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            },
+            danger: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              200: '#fecaca',
+              300: '#fca5a5',
+              400: '#f87171',
+              500: '#ef4444',
+              600: '#dc2626',
+            }
+          },
+          boxShadow: {
+            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+            'card': '0 0 0 1px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 24px -4px rgba(0, 0, 0, 0.08)',
+            'card-hover': '0 0 0 1px rgba(59, 130, 246, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05), 0 20px 40px -8px rgba(0, 0, 0, 0.12)',
+            'glow': '0 0 20px rgba(59, 130, 246, 0.15)',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'scale-in': 'scaleIn 0.2s ease-out',
+            'pulse-slow': 'pulse 3s ease-in-out infinite',
+            'bounce-in': 'bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            scaleIn: { '0%': { opacity: '0', transform: 'scale(0.95)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+            bounceIn: { '0%': { opacity: '0', transform: 'scale(0.3)' }, '50%': { transform: 'scale(1.05)' }, '70%': { transform: 'scale(0.9)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    .page { display: none; animation: fadeIn 0.3s ease-out; }
+    .page.active { display: block; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); } }
+    
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease-out; }
+    .modal-box { animation: slideUp 0.3s ease-out; }
+    
+    #toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 200; }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    
+    .live-dot { animation: pulse-glow 2s infinite; }
+    
+    .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05), 0 20px 40px -8px rgba(0, 0, 0, 0.12); }
+    
+    .text-gradient { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+    
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: skeleton 1.5s infinite; }
+    @keyframes skeleton { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    
+    .risk-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+    
+    .filter-chip { transition: all 0.15s ease; }
+    .filter-chip.active { background: #2563eb; color: white; }
+    
+    .nav-link { transition: all 0.2s ease; }
+    .nav-link:hover { background: rgba(59, 130, 246, 0.08); }
+    .nav-link.active { background: rgba(59, 130, 246, 0.12); color: #2563eb; font-weight: 600; }
+    
+    .dropdown { position: relative; }
+    .dropdown-content { position: absolute; top: 100%; right: 0; margin-top: 0.5rem; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease; }
+    .dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
+    
+    .table-row-hover:hover { background: linear-gradient(90deg, rgba(59, 130, 246, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%); }
+    
+    .stat-card { position: relative; overflow: hidden; }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--tw-gradient-from), var(--tw-gradient-to)); }
+    
+    .badge-shimmer { background: linear-gradient(90deg, currentColor 0%, transparent 50%, currentColor 100%); background-size: 200% 100%; animation: shimmer 2s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+<!-- Mobile Sidebar Overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white z-40 -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-2xl overflow-hidden">
+  <!-- Logo -->
+  <div class="p-6 border-b border-white/10">
+    <div class="flex items-center gap-3">
+      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+        <img src="/logo/VC_Logo.png" alt="VC" class="w-6 h-6 object-contain" style="filter: brightness(0) invert(1);">
+      </div>
+      <div>
+        <div class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold">Vantage Circle</div>
+        <div class="font-bold text-sm">GRC Command Center</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 py-4 px-3 overflow-y-auto">
+    <div class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold px-3 mb-3">Main Menu</div>
+    <a href="#" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" data-page="dashboard">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="#" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" data-page="policies">
+      <span class="material-symbols-outlined">policy</span>
+      <span>Policies</span>
+    </a>
+    <a href="#" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" data-page="reports">
+      <span class="material-symbols-outlined">assessment</span>
+      <span>Reports</span>
+    </a>
+    <a href="#" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" data-page="vapt">
+      <span class="material-symbols-outlined">security</span>
+      <span>VAPT Reports</span>
+    </a>
+    <a href="#" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" data-page="certificates">
+      <span class="material-symbols-outlined">verified_user</span>
+      <span>Certificates</span>
+    </a>
+    <a href="#" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" data-page="risks">
+      <span class="material-symbols-outlined">warning</span>
+      <span>Risk Register</span>
+    </a>
+    
+    <div class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold px-3 mt-6 mb-3">Settings</div>
+    <a href="#" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" data-page="activity">
+      <span class="material-symbols-outlined">history</span>
+      <span>Activity Log</span>
+    </a>
+    <a href="#" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1" onclick="openModal('help-modal'); return false;">
+      <span class="material-symbols-outlined">help</span>
+      <span>Help</span>
+    </a>
+  </nav>
+
+  <!-- User Section -->
+  <div class="p-4 border-t border-white/10">
+    <div id="sidebar-logged-out">
+      <button onclick="openModal('login-modal')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all">
+        <span class="material-symbols-outlined">login</span>
+        <span class="text-sm font-medium">Admin Login</span>
+      </button>
+    </div>
+    <div id="sidebar-logged-in" class="hidden">
+      <div class="flex items-center gap-3 mb-3 px-2">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-sm font-bold shadow-lg shadow-blue-500/30" id="user-avatar">A</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold truncate" id="user-name">Admin</div>
+          <div class="text-xs text-white/40">Administrator</div>
+        </div>
+      </div>
+      <button onclick="doLogout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-white/10 transition-all text-sm">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="md:ml-64 min-h-screen">
+  <!-- Header -->
+  <header class="sticky top-0 z-30 glass border-b border-slate-200/50 backdrop-blur-xl">
+    <div class="flex items-center justify-between h-14 md:h-16 px-4 md:px-8">
+      <!-- Mobile Menu -->
+      <button class="md:hidden p-2 -ml-2 hover:bg-slate-100 rounded-lg transition-colors active:bg-slate-200" onclick="openSidebar()">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+
+      <!-- Search -->
+      <div class="flex-1 max-w-xl relative">
+        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+        <input id="search-input" type="text" placeholder="Search..." 
+          class="w-full bg-slate-100/80 border-0 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all placeholder:text-slate-400"
+          autocomplete="off">
+        <div id="search-dropdown" class="absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl shadow-xl border border-slate-200 hidden z-50 overflow-hidden max-h-[70vh]">
+          <div id="search-results" class="max-h-60 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-2 md:gap-3 ml-2 md:ml-4">
+        <div id="connection-status" class="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+          <span class="live-dot w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Live</span>
+        </div>
+        <button onclick="openModal('login-modal')" class="login-btn flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all text-sm font-medium shadow-lg shadow-blue-500/25">
+          <span class="material-symbols-outlined text-sm">login</span>
+          <span>Admin Login</span>
+        </button>
+        <button class="admin-only hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all text-sm font-medium" onclick="openModal('quick-add-modal')">
+          <span class="material-symbols-outlined text-sm">add</span>
+          <span>Quick Add</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="p-4 md:p-6 lg:p-8">
+
+    <!-- Dashboard -->
+    <div class="page active" id="page-dashboard">
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="live-dot w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Real-time Overview</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Compliance Dashboard</h1>
+        <p class="text-slate-500 mt-2">Monitor your organization's governance, risk, and compliance status</p>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8">
+        <div class="stat-card card-hover bg-white rounded-2xl p-5 md:p-6 shadow-card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">policy</span>
+            </div>
+            <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Active</span>
+          </div>
+          <div class="text-3xl md:text-4xl font-bold text-slate-900" id="kpi-policies">0</div>
+          <div class="text-sm text-slate-500 mt-1 font-medium">Active Policies</div>
+          <div class="mt-4 flex items-center gap-2 text-xs">
+            <span class="text-emerald-600 font-semibold" id="policies-published">0</span> published
+          </div>
+        </div>
+
+        <div class="stat-card card-hover bg-white rounded-2xl p-5 md:p-6 shadow-card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">assessment</span>
+            </div>
+          </div>
+          <div class="text-3xl md:text-4xl font-bold text-slate-900" id="kpi-reports">0</div>
+          <div class="text-sm text-slate-500 mt-1 font-medium">Total Reports</div>
+          <div class="mt-4 flex items-center gap-2 text-xs">
+            <span class="text-emerald-600 font-semibold" id="reports-complete">0</span> completed
+          </div>
+        </div>
+
+        <div class="stat-card card-hover bg-white rounded-2xl p-5 md:p-6 shadow-card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">verified</span>
+            </div>
+          </div>
+          <div class="text-3xl md:text-4xl font-bold text-slate-900" id="kpi-certs">0</div>
+          <div class="text-sm text-slate-500 mt-1 font-medium">Active Certificates</div>
+          <div class="mt-4 flex items-center gap-2 text-xs">
+            <span class="text-danger-600 font-semibold" id="certs-expired">0</span> expired
+          </div>
+        </div>
+
+        <div class="stat-card card-hover bg-white rounded-2xl p-5 md:p-6 shadow-card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">bug_report</span>
+            </div>
+          </div>
+          <div class="text-3xl md:text-4xl font-bold text-slate-900" id="kpi-vapt">0</div>
+          <div class="text-sm text-slate-500 mt-1 font-medium">VAPT Reports</div>
+          <div class="mt-4 flex items-center gap-2 text-xs">
+            <span class="text-danger-600 font-semibold" id="vapt-findings">0</span> critical/high
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6 mb-8">
+        <!-- Compliance Score -->
+        <div class="bg-white rounded-2xl p-6 shadow-card overflow-hidden">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-semibold text-lg text-slate-900">Compliance Score</h3>
+            <span id="compliance-score" class="text-2xl font-bold text-gradient">0%</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="relative w-32 h-32 flex-shrink-0">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#f1f5f9" stroke-width="10"/>
+                <circle id="compliance-ring" cx="50" cy="50" r="42" fill="none" stroke="url(#ringGradient)" stroke-width="10" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" class="transition-all duration-1000 ease-out"/>
+                <defs>
+                  <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3b82f6"/>
+                    <stop offset="100%" stop-color="#22c55e"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-3xl font-bold text-slate-900" id="compliance-score-num">0</span>
+                <span class="text-[10px] text-slate-400 uppercase tracking-wider">Score</span>
+              </div>
+            </div>
+            <div class="flex-1 space-y-4">
+              <div>
+                <div class="flex items-center justify-between text-sm mb-2">
+                  <span class="text-slate-600 font-medium">Policies</span>
+                  <span class="font-bold text-slate-900" id="policy-score">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                  <div id="policy-bar" class="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-sm mb-2">
+                  <span class="text-slate-600 font-medium">Reports</span>
+                  <span class="font-bold text-slate-900" id="report-score">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                  <div id="report-bar" class="bg-gradient-to-r from-cyan-500 to-cyan-600 h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-sm mb-2">
+                  <span class="text-slate-600 font-medium">Certificates</span>
+                  <span class="font-bold text-slate-900" id="cert-score">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                  <div id="cert-bar" class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certificate Expiry -->
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="font-semibold text-lg text-slate-900">Certificate Expiry</h3>
+            <button onclick="navigate('certificates')" class="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors">View All</button>
+          </div>
+          <div id="cert-expiry-list" class="space-y-3 max-h-72 overflow-y-auto"></div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="font-semibold text-lg text-slate-900">Recent Activity</h3>
+            <button onclick="navigate('activity')" class="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors">View All</button>
+          </div>
+          <div id="recent-activities" class="space-y-3 max-h-72 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <!-- Recent Policies -->
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="font-semibold text-lg text-slate-900">Recent Policies</h3>
+            <button onclick="navigate('policies')" class="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors">View All</button>
+          </div>
+          <div id="dash-policies" class="space-y-2"></div>
+        </div>
+
+        <!-- Recent Reports -->
+        <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+          <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-semibold text-lg text-white">Compliance Reports</h3>
+                <p class="text-blue-200 text-sm mt-1">Latest audit results</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl text-white/80">analytics</span>
+              </div>
+            </div>
+            <div id="dash-reports" class="space-y-2"></div>
+            <button onclick="openModal('new-report-modal')" class="admin-only hidden w-full mt-5 bg-white/15 hover:bg-white/25 backdrop-blur text-white font-medium py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 border border-white/20">
+              <span class="material-symbols-outlined text-sm">add</span>
+              Generate New Report
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Policies Page -->
+    <div class="page" id="page-policies">
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Policy Library</h1>
+        <p class="text-slate-500 mt-2">Manage and review your organization's policies</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 mb-6">
+        <div class="flex flex-wrap gap-2 flex-1">
+          <button class="filter-chip active px-4 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600" data-filter="all">All</button>
+          <button class="filter-chip px-4 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600" data-filter="Published">Published</button>
+          <button class="filter-chip px-4 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600" data-filter="Under Review">Under Review</button>
+          <button class="filter-chip px-4 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600" data-filter="Draft">Draft</button>
+        </div>
+        <button onclick="openModal('new-policy-modal')" class="admin-only hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all text-sm font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">add</span>
+          New Policy
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/50 shadow-card overflow-hidden">
+        <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/80 text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-100">
+          <div class="col-span-5">Policy</div>
+          <div class="col-span-2">Category</div>
+          <div class="col-span-2">Status</div>
+          <div class="col-span-2">Updated</div>
+          <div class="col-span-1 admin-only hidden text-center">Actions</div>
+        </div>
+        <div id="policy-table" class="divide-y divide-slate-100 md:divide-none"></div>
+      </div>
+    </div>
+
+    <!-- Reports Page -->
+    <div class="page" id="page-reports">
+      <div class="mb-8 flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Compliance Reports</h1>
+          <p class="text-slate-500 mt-2">Audit reports and compliance assessments</p>
+        </div>
+        <button onclick="openModal('new-report-modal')" class="admin-only hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all text-sm font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">add</span>
+          Add Report
+        </button>
+      </div>
+
+      <div id="reports-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"></div>
+    </div>
+
+    <!-- VAPT Page -->
+    <div class="page" id="page-vapt">
+      <div class="mb-8 flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold text-slate-900">VAPT Reports</h1>
+          <p class="text-slate-500 mt-2">Vulnerability Assessment & Penetration Testing results</p>
+        </div>
+        <button onclick="openModal('new-vapt-modal')" class="admin-only hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all text-sm font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">add</span>
+          Add VAPT Report
+        </button>
+      </div>
+
+      <div id="vapt-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6"></div>
+    </div>
+
+    <!-- Certificates Page -->
+    <div class="page" id="page-certificates">
+      <div class="mb-8 flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Certificates</h1>
+          <p class="text-slate-500 mt-2">Compliance certifications and attestations</p>
+        </div>
+        <button onclick="openModal('new-cert-modal')" class="admin-only hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all text-sm font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">add</span>
+          Add Certificate
+        </button>
+      </div>
+
+      <div id="certs-grid" class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+    </div>
+
+    <!-- Risks Page -->
+    <div class="page" id="page-risks">
+      <div class="mb-8 flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Risk Register</h1>
+          <p class="text-slate-500 mt-2">Track and manage organizational risks</p>
+        </div>
+        <button onclick="openModal('new-risk-modal')" class="admin-only hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all text-sm font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">add</span>
+          Add Risk
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/50 shadow-card overflow-hidden">
+        <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/80 text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-100">
+          <div class="col-span-3">Risk</div>
+          <div class="col-span-2">Category</div>
+          <div class="col-span-2">Severity</div>
+          <div class="col-span-2">Owner</div>
+          <div class="col-span-2">Status</div>
+          <div class="col-span-1 admin-only hidden text-center">Actions</div>
+        </div>
+        <div id="risk-table" class="divide-y divide-slate-100 md:divide-none"></div>
+      </div>
+    </div>
+
+    <!-- Activity Log Page -->
+    <div class="page" id="page-activity">
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Activity Log</h1>
+        <p class="text-slate-500 mt-2">Track all changes and updates across the system</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/50 shadow-card overflow-hidden">
+        <div id="activity-table" class="divide-y divide-slate-100"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- FAB -->
+<button onclick="openModal('quick-add-modal')" class="admin-only hidden fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-xl shadow-blue-500/30 flex items-center justify-center hover:scale-110 hover:shadow-2xl hover:shadow-blue-500/40 transition-all z-50">
+  <span class="material-symbols-outlined">add</span>
+</button>
+
+<!-- Modals -->
+<div id="pdf-preview-modal" class="modal-overlay" onclick="if(event.target.id==='pdf-preview-modal')closeModal('pdf-preview-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl flex flex-col" style="width:90vw;max-width:960px;height:90vh;">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+      <h3 id="preview-title" class="font-semibold text-lg"></h3>
+      <div class="flex items-center gap-2">
+        <a id="preview-download" href="#" download class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">Download</a>
+        <button onclick="closeModal('pdf-preview-modal')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors"><span class="material-symbols-outlined">close</span></button>
+      </div>
+    </div>
+    <iframe id="preview-frame" src="" class="flex-1 rounded-b-2xl"></iframe>
+  </div>
+</div>
+
+<!-- Policy Modal -->
+<div id="policy-modal" class="modal-overlay" onclick="if(event.target.id==='policy-modal')closeModal('policy-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6">
+    <div class="flex items-start justify-between mb-6">
+      <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+        <span class="material-symbols-outlined">description</span>
+      </div>
+      <button onclick="closeModal('policy-modal')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <h3 id="pm-title" class="text-xl font-bold mb-2"></h3>
+    <p id="pm-meta" class="text-sm text-slate-500 mb-4"></p>
+    <span id="pm-status" class="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-4"></span>
+    <p id="pm-desc" class="text-sm text-slate-600 leading-relaxed mb-6"></p>
+    <div class="flex flex-wrap gap-3">
+      <button id="pm-preview" onclick="openPdfPreview('pm')" class="flex-1 min-w-[120px] py-2.5 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">visibility</span>Preview
+      </button>
+      <a id="pm-download" href="#" download class="flex-1 min-w-[120px] py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">download</span>Download
+      </a>
+    </div>
+    <button onclick="replacePdf()" class="admin-only hidden w-full mt-3 py-2.5 bg-amber-500 text-white rounded-xl text-sm font-bold hover:bg-amber-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30">
+      <span class="material-symbols-outlined text-sm">upload_file</span>Replace PDF
+    </button>
+  </div>
+</div>
+
+<!-- Report Modal -->
+<div id="report-modal" class="modal-overlay" onclick="if(event.target.id==='report-modal')closeModal('report-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6">
+    <div class="flex items-start justify-between mb-6">
+      <div class="w-12 h-12 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center">
+        <span class="material-symbols-outlined">assessment</span>
+      </div>
+      <button onclick="closeModal('report-modal')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <h3 id="rm-title" class="text-xl font-bold mb-2"></h3>
+    <p id="rm-sub" class="text-sm text-slate-500 mb-4"></p>
+    <p id="rm-desc" class="text-sm text-slate-600 leading-relaxed mb-6"></p>
+    <div class="flex flex-wrap gap-3">
+      <button id="rm-preview" onclick="openPdfPreview('rm')" class="flex-1 min-w-[120px] py-2.5 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">visibility</span>Preview
+      </button>
+      <a id="rm-download" href="#" download class="flex-1 min-w-[120px] py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">download</span>Download
+      </a>
+    </div>
+    <button onclick="replacePdf()" class="admin-only hidden w-full mt-3 py-2.5 bg-amber-500 text-white rounded-xl text-sm font-bold hover:bg-amber-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30">
+      <span class="material-symbols-outlined text-sm">upload_file</span>Replace PDF
+    </button>
+  </div>
+</div>
+
+<!-- VAPT Modal -->
+<div id="vapt-modal" class="modal-overlay" onclick="if(event.target.id==='vapt-modal')closeModal('vapt-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6">
+    <div class="flex items-start justify-between mb-6">
+      <div class="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+        <span class="material-symbols-outlined">bug_report</span>
+      </div>
+      <button onclick="closeModal('vapt-modal')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <h3 id="vm-title" class="text-xl font-bold mb-2"></h3>
+    <p id="vm-sub" class="text-sm text-slate-500 mb-4"></p>
+    <div id="vm-findings" class="grid grid-cols-4 gap-2 mb-4"></div>
+    <p id="vm-desc" class="text-sm text-slate-600 leading-relaxed mb-6"></p>
+    <div class="flex flex-wrap gap-3">
+      <button id="vm-preview" onclick="openPdfPreview('vm')" class="flex-1 min-w-[120px] py-2.5 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">visibility</span>Preview
+      </button>
+      <a id="vm-download" href="#" download class="flex-1 min-w-[120px] py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">download</span>Download
+      </a>
+    </div>
+    <button onclick="replacePdf()" class="admin-only hidden w-full mt-3 py-2.5 bg-amber-500 text-white rounded-xl text-sm font-bold hover:bg-amber-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30">
+      <span class="material-symbols-outlined text-sm">upload_file</span>Replace PDF
+    </button>
+  </div>
+</div>
+
+<!-- Certificate Modal -->
+<div id="cert-modal" class="modal-overlay" onclick="if(event.target.id==='cert-modal')closeModal('cert-modal')">
+  <div id="cert-modal-box" class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 border-l-4 border-emerald-500">
+    <div id="cert-warning-bar" class="hidden -mx-6 -mt-6 mb-6 p-3 bg-red-50 text-red-700 flex items-center gap-2 rounded-t-2xl">
+      <span class="material-symbols-outlined">warning</span>
+      <span class="font-semibold text-sm">This certificate has EXPIRED!</span>
+    </div>
+    <div class="flex items-start justify-between mb-6">
+      <div id="cm-icon" class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+        <span class="material-symbols-outlined">verified</span>
+      </div>
+      <button onclick="closeModal('cert-modal')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <h3 id="cm-name" class="text-2xl font-bold mb-1"></h3>
+    <p id="cm-full" class="text-sm text-slate-500 mb-3"></p>
+    <span id="cm-status" class="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-4"></span>
+    <div class="bg-slate-50 rounded-xl p-4 mb-6 space-y-3 text-sm">
+      <div class="flex justify-between"><span class="text-slate-500">Issued</span><span id="cm-issued" class="font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Expires</span><span id="cm-expiry" class="font-medium text-red-600 font-bold"></span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Certifying Body</span><span id="cm-body" class="font-medium"></span></div>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <button id="cm-preview" onclick="openPdfPreview('cm')" class="flex-1 min-w-[100px] py-2.5 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">visibility</span>Preview
+      </button>
+      <a id="cm-download" href="#" download class="flex-1 min-w-[100px] py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">download</span>Download
+      </a>
+    </div>
+    <button onclick="replacePdf()" class="admin-only hidden w-full mt-3 py-2.5 bg-amber-500 text-white rounded-xl text-sm font-bold hover:bg-amber-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30">
+      <span class="material-symbols-outlined text-sm">upload_file</span>Replace / Renew Certificate
+    </button>
+  </div>
+</div>
+
+<!-- Edit Certificate Modal -->
+<div id="edit-cert-modal" class="modal-overlay" onclick="if(event.target.id==='edit-cert-modal')closeModal('edit-cert-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Edit Certificate</h3>
+    <input type="hidden" id="edit-cert-id">
+    <div class="space-y-4 mb-6">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Short Name</label>
+          <input id="edit-cert-name" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Status</label>
+          <select id="edit-cert-status" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+            <option>Active</option><option>Certified</option><option>Compliant</option><option>Expired</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Full Name</label>
+        <input id="edit-cert-fullname" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Issued Date</label>
+          <input id="edit-cert-issued" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Valid Until</label>
+          <input id="edit-cert-expiry" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Certifying Body</label>
+        <input id="edit-cert-body" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="saveEditCert()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Save Changes</button>
+      <button onclick="closeModal('edit-cert-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Report Modal -->
+<div id="new-report-modal" class="modal-overlay" onclick="if(event.target.id==='new-report-modal')closeModal('new-report-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Add New Report</h3>
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Report Title</label>
+        <input id="nr-title" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. ISO 27001 Audit 2026">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Subtitle / Auditor</label>
+        <input id="nr-subtitle" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Assessed by Scrut Automation">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description</label>
+        <textarea id="nr-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="2" placeholder="Brief summary..."></textarea>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">PDF Document</label>
+        <input id="nr-file" type="file" accept=".pdf" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-3 text-sm">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewReport()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Add Report</button>
+      <button onclick="closeModal('new-report-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Report Modal -->
+<div id="edit-report-modal" class="modal-overlay" onclick="if(event.target.id==='edit-report-modal')closeModal('edit-report-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Edit Report</h3>
+    <input type="hidden" id="edit-report-id">
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Report Title</label>
+        <input id="edit-report-title" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Subtitle / Auditor</label>
+        <input id="edit-report-subtitle" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description</label>
+        <textarea id="edit-report-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="2"></textarea>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Status</label>
+        <select id="edit-report-status" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+          <option>Complete</option><option>Verified</option><option>In Progress</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Replace PDF</label>
+        <input id="edit-report-file" type="file" accept=".pdf" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-3 text-sm">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="saveEditReport()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Save Changes</button>
+      <button onclick="closeModal('edit-report-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Policy Modal -->
+<div id="new-policy-modal" class="modal-overlay" onclick="if(event.target.id==='new-policy-modal')closeModal('new-policy-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">New Policy</h3>
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Policy Name <span class="text-red-500">*</span></label>
+        <input id="new-policy-name" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Remote Work Security Policy">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Category <span class="text-red-500">*</span></label>
+        <select id="new-policy-cat" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+          <option>Security</option><option>Privacy</option><option>HR</option><option>IT</option><option>Risk</option><option>Operations</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description <span class="text-red-500">*</span></label>
+        <textarea id="new-policy-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="3" maxlength="500" placeholder="Brief description..." oninput="document.getElementById('new-policy-desc-count').textContent=this.value.length+' / 500'"></textarea>
+        <span id="new-policy-desc-count" class="text-xs text-slate-400">0 / 500</span>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">PDF Document <span class="text-red-500">*</span></label>
+        <input id="new-policy-file" type="file" accept=".pdf" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-3 text-sm">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewPolicy()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Create Policy</button>
+      <button onclick="closeModal('new-policy-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Policy Modal -->
+<div id="edit-policy-modal" class="modal-overlay" onclick="if(event.target.id==='edit-policy-modal')closeModal('edit-policy-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Edit Policy</h3>
+    <input type="hidden" id="edit-policy-id">
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Policy Name <span class="text-red-500">*</span></label>
+        <input id="edit-policy-name" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Category</label>
+        <select id="edit-policy-cat" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+          <option>Security</option><option>Privacy</option><option>HR</option><option>IT</option><option>Risk</option><option>Operations</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Status</label>
+        <select id="edit-policy-status" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+          <option>Published</option><option>Under Review</option><option>Draft</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description <span class="text-red-500">*</span></label>
+        <textarea id="edit-policy-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="3" maxlength="500" oninput="document.getElementById('edit-policy-desc-count').textContent=this.value.length+' / 500'"></textarea>
+        <span id="edit-policy-desc-count" class="text-xs text-slate-400">0 / 500</span>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Replace PDF</label>
+        <input id="edit-policy-file" type="file" accept=".pdf" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-3 text-sm">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="saveEditPolicy()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Save Changes</button>
+      <button onclick="closeModal('edit-policy-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New VAPT Modal -->
+<div id="new-vapt-modal" class="modal-overlay" onclick="if(event.target.id==='new-vapt-modal')closeModal('new-vapt-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Add VAPT Report</h3>
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Title</label>
+        <input id="nv-title" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Web Application VAPT">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Subtitle / Scope</label>
+        <input id="nv-subtitle" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Vantage Circle Web App">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Report ID</label>
+        <input id="nv-reportid" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. VAPT-WEB-2026">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description</label>
+        <textarea id="nv-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="2" placeholder="Brief summary..."></textarea>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">PDF Report</label>
+        <input id="nv-file" type="file" accept=".pdf" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-3 text-sm">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewVapt()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Add Report</button>
+      <button onclick="closeModal('new-vapt-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit VAPT Modal -->
+<div id="edit-vapt-modal" class="modal-overlay" onclick="if(event.target.id==='edit-vapt-modal')closeModal('edit-vapt-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Edit VAPT Report</h3>
+    <input type="hidden" id="edit-vapt-id">
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Title</label>
+        <input id="edit-vapt-title" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Subtitle / Scope</label>
+        <input id="edit-vapt-subtitle" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Report ID</label>
+        <input id="edit-vapt-reportid" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description</label>
+        <textarea id="edit-vapt-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="2"></textarea>
+      </div>
+      <div class="grid grid-cols-4 gap-2">
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Critical</label>
+          <input id="edit-vapt-critical" type="number" min="0" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-2 text-sm text-center focus:ring-2 focus:ring-blue-500/20">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">High</label>
+          <input id="edit-vapt-high" type="number" min="0" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-2 text-sm text-center focus:ring-2 focus:ring-blue-500/20">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Medium</label>
+          <input id="edit-vapt-medium" type="number" min="0" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-2 text-sm text-center focus:ring-2 focus:ring-blue-500/20">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Low</label>
+          <input id="edit-vapt-low" type="number" min="0" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-2 text-sm text-center focus:ring-2 focus:ring-blue-500/20">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Replace PDF</label>
+        <input id="edit-vapt-file" type="file" accept=".pdf" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-3 text-sm">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="saveEditVapt()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Save Changes</button>
+      <button onclick="closeModal('edit-vapt-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Certificate Modal -->
+<div id="new-cert-modal" class="modal-overlay" onclick="if(event.target.id==='new-cert-modal')closeModal('new-cert-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Add Certificate</h3>
+    <div class="space-y-4 mb-6">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Short Name</label>
+          <input id="nc-name" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. ISO 27001">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Status</label>
+          <select id="nc-status" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+            <option>Active</option><option>Certified</option><option>Compliant</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Full Name</label>
+        <input id="nc-fullname" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Information Security Management System">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Issued Date</label>
+          <input id="nc-issued" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Apr 25, 2024">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Valid Until</label>
+          <input id="nc-expiry" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Apr 24, 2027">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Certifying Body</label>
+        <input id="nc-body" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. INTERCERT">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Certificate PDF</label>
+        <input id="nc-file" type="file" accept=".pdf" class="w-full bg-slate-100 border-0 rounded-lg py-2 px-3 text-sm">
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewCert()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Add Certificate</button>
+      <button onclick="closeModal('new-cert-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Risk Modal -->
+<div id="new-risk-modal" class="modal-overlay" onclick="if(event.target.id==='new-risk-modal')closeModal('new-risk-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Add New Risk</h3>
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Risk Title</label>
+        <input id="nrisk-title" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Data Breach Exposure">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Category</label>
+          <select id="nrisk-cat" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+            <option>Privacy</option><option>Operations</option><option>Legal</option><option>HR</option><option>IT</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Severity</label>
+          <select id="nrisk-sev" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+            <option>High</option><option>Medium</option><option>Low</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Owner</label>
+        <input id="nrisk-owner" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="e.g. Security Team">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description</label>
+        <textarea id="nrisk-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="2" placeholder="Describe the risk..."></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="addNewRisk()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Add Risk</button>
+      <button onclick="closeModal('new-risk-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Risk Modal -->
+<div id="edit-risk-modal" class="modal-overlay" onclick="if(event.target.id==='edit-risk-modal')closeModal('edit-risk-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Edit Risk</h3>
+    <input type="hidden" id="edit-risk-id">
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Risk Title <span class="text-red-500">*</span></label>
+        <input id="edit-risk-title" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Category</label>
+          <select id="edit-risk-cat" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+            <option>Privacy</option><option>Operations</option><option>Legal</option><option>HR</option><option>IT</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Severity</label>
+          <select id="edit-risk-sev" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+            <option>High</option><option>Medium</option><option>Low</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Owner</label>
+        <input id="edit-risk-owner" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Status</label>
+        <select id="edit-risk-status" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20">
+          <option>Open</option><option>Mitigating</option><option>Mitigated</option><option>Monitored</option><option>Resolved</option><option>Closed</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Description</label>
+        <textarea id="edit-risk-desc" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm resize-none focus:ring-2 focus:ring-blue-500/20" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="saveEditRisk()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Save Changes</button>
+      <button onclick="closeModal('edit-risk-modal')" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Add Modal -->
+<div id="quick-add-modal" class="modal-overlay" onclick="if(event.target.id==='quick-add-modal')closeModal('quick-add-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6">
+    <h3 class="text-lg font-bold mb-6">Quick Add</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="closeModal('quick-add-modal');openModal('new-policy-modal')" class="p-5 bg-slate-50 hover:bg-blue-50 rounded-xl text-center transition-all border-2 border-transparent hover:border-blue-200">
+        <span class="material-symbols-outlined text-3xl text-blue-600 mb-2">policy</span>
+        <div class="text-sm font-semibold text-slate-700">Policy</div>
+      </button>
+      <button onclick="closeModal('quick-add-modal');openModal('new-report-modal')" class="p-5 bg-slate-50 hover:bg-cyan-50 rounded-xl text-center transition-all border-2 border-transparent hover:border-cyan-200">
+        <span class="material-symbols-outlined text-3xl text-cyan-600 mb-2">assessment</span>
+        <div class="text-sm font-semibold text-slate-700">Report</div>
+      </button>
+      <button onclick="closeModal('quick-add-modal');openModal('new-vapt-modal')" class="p-5 bg-slate-50 hover:bg-red-50 rounded-xl text-center transition-all border-2 border-transparent hover:border-red-200">
+        <span class="material-symbols-outlined text-3xl text-red-600 mb-2">security</span>
+        <div class="text-sm font-semibold text-slate-700">VAPT</div>
+      </button>
+      <button onclick="closeModal('quick-add-modal');openModal('new-cert-modal')" class="p-5 bg-slate-50 hover:bg-emerald-50 rounded-xl text-center transition-all border-2 border-transparent hover:border-emerald-200">
+        <span class="material-symbols-outlined text-3xl text-emerald-600 mb-2">verified</span>
+        <div class="text-sm font-semibold text-slate-700">Certificate</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div id="help-modal" class="modal-overlay" onclick="if(event.target.id==='help-modal')closeModal('help-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 max-h-[80vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-lg font-bold">Help & Support</h3>
+      <button onclick="closeModal('help-modal')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="space-y-4 text-sm text-slate-600">
+      <p>The GRC Command Center provides a centralized view of your organization's governance, risk, and compliance status.</p>
+      <div class="bg-slate-50 rounded-xl p-4">
+        <div class="font-semibold text-slate-900 mb-2">Features</div>
+        <ul class="space-y-1.5">
+          <li><span class="material-symbols-outlined text-blue-500 align-middle mr-1">policy</span> <strong>Policy Library</strong> - Manage organizational policies</li>
+          <li><span class="material-symbols-outlined text-cyan-500 align-middle mr-1">assessment</span> <strong>Reports</strong> - Track audit and compliance reports</li>
+          <li><span class="material-symbols-outlined text-red-500 align-middle mr-1">security</span> <strong>VAPT Reports</strong> - View security assessment results</li>
+          <li><span class="material-symbols-outlined text-emerald-500 align-middle mr-1">verified</span> <strong>Certificates</strong> - Monitor certification status</li>
+          <li><span class="material-symbols-outlined text-amber-500 align-middle mr-1">warning</span> <strong>Risk Register</strong> - Track and manage risks</li>
+        </ul>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-4">
+        <div class="font-semibold text-slate-900 mb-2">Contact</div>
+        <p>For support, contact <a href="mailto:security@vantagecircle.com" class="text-blue-600 hover:underline font-medium">security@vantagecircle.com</a></p>
+        <p class="text-xs text-slate-400 mt-3">Created by Adin Ankur Saikia</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" class="modal-overlay" onclick="if(event.target.id==='login-modal')closeModal('login-modal')">
+  <div class="modal-box bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+        <span class="material-symbols-outlined">lock</span>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold">Admin Login</h3>
+        <p class="text-xs text-slate-500">Access the dashboard</p>
+      </div>
+    </div>
+    <div class="space-y-4 mb-6">
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Email</label>
+        <input id="login-user" type="email" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="admin@example.com" autocomplete="username">
+      </div>
+      <div>
+        <label class="text-xs font-semibold uppercase text-slate-400 block mb-1.5">Password</label>
+        <input id="login-pass" type="password" class="w-full bg-slate-100 border-0 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-blue-500/20" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+    </div>
+    <p id="login-error" class="text-xs text-red-500 mb-4 hidden">Incorrect email or password.</p>
+    <button onclick="doLogin()" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">Login</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-medium flex items-center gap-2">
+  <span class="material-symbols-outlined text-sm" id="toast-icon">check_circle</span>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────
+let policies = [], reports = [], vaptReports = [], certificates = [], risks = [], activities = [];
+let currentUser = null;
+let currentItem = null;
+
+// ─────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────
+const statusBadge = (s) => {
+  const map = {
+    'Published': 'bg-emerald-100 text-emerald-700',
+    'Verified': 'bg-emerald-100 text-emerald-700',
+    'Complete': 'bg-emerald-100 text-emerald-700',
+    'Active': 'bg-emerald-100 text-emerald-700',
+    'Certified': 'bg-blue-100 text-blue-700',
+    'Compliant': 'bg-blue-100 text-blue-700',
+    'Under Review': 'bg-amber-100 text-amber-700',
+    'In Progress': 'bg-amber-100 text-amber-700',
+    'Draft': 'bg-slate-200 text-slate-600',
+    'Expired': 'bg-red-100 text-red-700',
+    'Open': 'bg-red-100 text-red-700',
+    'Mitigating': 'bg-blue-100 text-blue-700',
+    'Mitigated': 'bg-emerald-100 text-emerald-700',
+    'Monitored': 'bg-amber-100 text-amber-700',
+    'Resolved': 'bg-emerald-100 text-emerald-700',
+    'Closed': 'bg-slate-200 text-slate-600',
+  };
+  return map[s] || 'bg-slate-200 text-slate-600';
+};
+
+const sevBadge = (s) => ({
+  'High': 'bg-red-100 text-red-700',
+  'Critical': 'bg-red-600 text-white',
+  'Medium': 'bg-amber-100 text-amber-700',
+  'Low': 'bg-slate-200 text-slate-600',
+})[s] || 'bg-slate-200 text-slate-600';
+
+const certBg = (color, status) => {
+  if (color === 'green' || ['Active', 'Certified', 'Compliant'].includes(status)) {
+    return { bg: 'bg-emerald-100 text-emerald-600', badge: 'bg-emerald-100 text-emerald-700' };
+  }
+  return { bg: 'bg-red-100 text-red-600', badge: 'bg-red-100 text-red-700' };
+};
+
+const todayStr = () => new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const todayMonthYear = () => new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return '—';
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch { return dateStr; }
+};
+
+const timeAgo = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return formatDate(dateStr);
+};
+
+// ─────────────────────────────────────────────────────────────
+// Upload
+// ─────────────────────────────────────────────────────────────
+async function uploadFile(fileInput, folder) {
+  if (!fileInput?.files[0]) return '';
+  const form = new FormData();
+  form.append('file', fileInput.files[0]);
+  const res = await fetch(`/api/upload?folder=${folder}`, { method: 'POST', body: form });
+  const data = await res.json();
+  return data.relativePath || '';
+}
+
+// ─────────────────────────────────────────────────────────────
+// Data Loading
+// ─────────────────────────────────────────────────────────────
+async function loadData() {
+  const res = await fetch('/api/data');
+  const data = await res.json();
+  policies = data.policies || [];
+  reports = data.reports || [];
+  vaptReports = data.vapt || [];
+  certificates = data.certificates || [];
+  risks = data.risks || [];
+  activities = data.activities || [];
+  renderAll();
+  // Re-apply admin state to newly rendered elements
+  setAdminUI(!!currentUser, currentUser);
+}
+
+async function loadDashboard() {
+  const res = await fetch('/api/dashboard');
+  const data = await res.json();
+  renderDashboard(data);
+}
+
+// ─────────────────────────────────────────────────────────────
+// Render Functions
+// ─────────────────────────────────────────────────────────────
+function renderDashboard(data) {
+  const { stats } = data;
+  
+  // KPIs
+  animateCount(document.getElementById('kpi-policies'), policies.length);
+  animateCount(document.getElementById('kpi-reports'), reports.length + vaptReports.length);
+  animateCount(document.getElementById('kpi-certs'), certificates.filter(c => ['Active', 'Certified', 'Compliant'].includes(c.status)).length);
+  animateCount(document.getElementById('kpi-vapt'), vaptReports.length);
+  
+  // Sub-stats
+  const published = policies.filter(p => p.status === 'Published').length;
+  document.getElementById('policies-published').textContent = published;
+  
+  const complete = reports.filter(r => ['Complete', 'Verified'].includes(r.status)).length;
+  document.getElementById('reports-complete').textContent = complete;
+  
+  const expired = certificates.filter(c => c.status === 'Expired').length;
+  document.getElementById('certs-expired').textContent = expired;
+  
+  const vaptCritHigh = vaptReports.reduce((s, v) => s + (v.findings_critical || 0) + (v.findings_high || 0), 0);
+  document.getElementById('vapt-findings').textContent = vaptCritHigh;
+  
+  // Compliance Score
+  const totalReports = reports.length + vaptReports.length;
+  const completeReports = reports.filter(r => ['Complete', 'Verified'].includes(r.status)).length + vaptReports.filter(v => v.status === 'Complete').length;
+  const reportPct = totalReports > 0 ? Math.round((completeReports / totalReports) * 100) : 0;
+  const certPct = certificates.length > 0 ? Math.round((certificates.filter(c => ['Active', 'Certified', 'Compliant'].includes(c.status)).length / certificates.length) * 100) : 0;
+  const policyPct = policies.length > 0 ? Math.round((published / policies.length) * 100) : 0;
+  const overallScore = Math.round(certPct * 0.4 + reportPct * 0.3 + policyPct * 0.3);
+  
+  document.getElementById('compliance-score').textContent = overallScore + '%';
+  document.getElementById('policy-score').textContent = policyPct + '%';
+  document.getElementById('report-score').textContent = reportPct + '%';
+  document.getElementById('cert-score').textContent = certPct + '%';
+  
+  document.getElementById('policy-bar').style.width = policyPct + '%';
+  document.getElementById('report-bar').style.width = reportPct + '%';
+  document.getElementById('cert-bar').style.width = certPct + '%';
+  
+  // Ring
+  const ring = document.getElementById('compliance-ring');
+  const circumference = 264;
+  ring.style.strokeDashoffset = circumference - (overallScore / 100) * circumference;
+  
+  // Certificate Expiry
+  renderCertExpiry();
+  
+  // Recent Activity
+  renderRecentActivity();
+  
+  // Dashboard items
+  renderDashPolicies();
+  renderDashReports();
+}
+
+function renderCertExpiry() {
+  const el = document.getElementById('cert-expiry-list');
+  if (!el) return;
+  
+  const today = new Date();
+  const items = certificates.map(c => {
+    if (!c.expiry_date || c.expiry_date === '—') return { ...c, days: null };
+    const exp = new Date(c.expiry_date);
+    const days = Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
+    return { ...c, days };
+  }).filter(c => c.days !== null).sort((a, b) => a.days - b.days).slice(0, 5);
+  
+  if (items.length === 0) {
+    el.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-slate-300">verified</span><p class="text-slate-400 text-sm mt-2">No certificates with expiry</p></div>';
+    return;
+  }
+  
+  el.innerHTML = items.map(c => {
+    let cls = 'bg-emerald-50 border-l-emerald-500';
+    let daysLabel = `${c.days}d`;
+    let icon = 'schedule';
+    if (c.days < 0) { cls = 'bg-red-50 border-l-red-500'; daysLabel = 'Expired'; icon = 'warning'; }
+    else if (c.days <= 30) { cls = 'bg-red-50 border-l-red-500'; daysLabel = `${c.days}d`; icon = 'warning'; }
+    else if (c.days <= 90) { cls = 'bg-amber-50 border-l-amber-500'; icon = 'schedule'; }
+    
+    return `<div class="flex items-center justify-between p-3 rounded-lg border-l-4 ${cls} cursor-pointer hover:shadow-md transition-all" onclick="openCertModal(${c.id})">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-lg ${c.days < 0 || c.days <= 30 ? 'text-red-500' : c.days <= 90 ? 'text-amber-500' : 'text-slate-400'}">${icon}</span>
+        <div>
+          <div class="text-sm font-medium text-slate-900">${c.name}</div>
+          <div class="text-xs text-slate-500">${c.expiry_date}</div>
+        </div>
+      </div>
+      <span class="text-xs font-bold px-2.5 py-1 rounded-full ${c.days < 0 || c.days <= 30 ? 'bg-red-100 text-red-700' : c.days <= 90 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}">${daysLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderRecentActivity() {
+  const el = document.getElementById('recent-activities');
+  if (!el) return;
+  
+  const recent = activities.slice(0, 10);
+  
+  if (recent.length === 0) {
+    el.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-slate-300">history</span><p class="text-slate-400 text-sm mt-2">No recent activity</p></div>';
+    return;
+  }
+  
+  const icons = {
+    created: { icon: 'add_circle', color: 'text-emerald-500 bg-emerald-50' },
+    updated: { icon: 'edit', color: 'text-blue-500 bg-blue-50' },
+    deleted: { icon: 'delete', color: 'text-red-100 bg-red-50' },
+    login: { icon: 'login', color: 'text-purple-500 bg-purple-50' },
+    logout: { icon: 'logout', color: 'text-slate-400 bg-slate-100' },
+    upload: { icon: 'upload_file', color: 'text-cyan-500 bg-cyan-50' }
+  };
+  
+  el.innerHTML = recent.map(a => {
+    const { icon, color } = icons[a.type] || icons.updated;
+    return `<div class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+      <div class="w-8 h-8 rounded-lg ${color} flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined text-sm">${icon}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium text-slate-900 truncate">${a.title}</div>
+        <div class="text-xs text-slate-400">${timeAgo(a.created_at)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDashPolicies() {
+  const el = document.getElementById('dash-policies');
+  if (!el) return;
+  
+  if (policies.length === 0) {
+    el.innerHTML = '<div class="text-center py-6"><p class="text-slate-400 text-sm">No policies yet</p></div>';
+    return;
+  }
+  
+  el.innerHTML = policies.slice(0, 5).map(p => `
+    <div onclick="openPolicyModal(${p.id})" class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+          <span class="material-symbols-outlined text-sm">${p.icon || 'description'}</span>
+        </div>
+        <span class="text-sm font-medium text-slate-900">${p.name}</span>
+      </div>
+      <span class="px-2.5 py-1 ${statusBadge(p.status)} text-[10px] font-semibold rounded-full">${p.status}</span>
+    </div>
+  `).join('');
+}
+
+function renderDashReports() {
+  const el = document.getElementById('dash-reports');
+  if (!el) return;
+  
+  if (reports.length === 0) {
+    el.innerHTML = '<div class="text-center py-4"><p class="text-blue-200 text-sm">No reports yet</p></div>';
+    return;
+  }
+  
+  el.innerHTML = reports.slice(0, 4).map(r => `
+    <div onclick="openReportModal(${r.id})" class="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 cursor-pointer transition-all border border-white/10">
+      <div class="flex items-center justify-between">
+        <div class="text-sm font-medium text-white truncate flex-1 mr-2">${r.title}</div>
+        <span class="px-2 py-0.5 ${statusBadge(r.status)} text-[10px] font-semibold rounded-full flex-shrink-0">${r.status}</span>
+      </div>
+      <div class="text-xs text-blue-200 mt-1">${r.date || ''}</div>
+    </div>
+  `).join('');
+}
+
+function renderPolicyTable(filter = 'all') {
+  const el = document.getElementById('policy-table');
+  if (!el) return;
+  
+  const filtered = filter === 'all' ? policies : policies.filter(p => p.status === filter);
+  
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="px-6 py-16 text-center"><span class="material-symbols-outlined text-5xl text-slate-300">policy</span><p class="text-slate-400 mt-3">No policies found</p></div>';
+    return;
+  }
+  
+  el.innerHTML = filtered.map((p, i) => `
+    <div class="table-row-hover md:grid md:grid-cols-12 md:gap-4 md:px-6 md:py-4 ${i < filtered.length - 1 ? 'border-b border-slate-100' : ''}">
+      <div onclick="openPolicyModal(${p.id})" class="md:col-span-5 flex items-start gap-3 px-4 py-3 md:px-0 md:py-0 cursor-pointer">
+        <div class="w-9 h-9 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-sm">${p.icon || 'description'}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium text-slate-900">${p.name}</div>
+          <div class="md:hidden flex items-center gap-2 mt-1.5">
+            <span class="px-2 py-0.5 ${statusBadge(p.status)} text-[10px] font-semibold rounded-full">${p.status}</span>
+            <span class="text-[10px] text-slate-400">${p.category}</span>
+          </div>
+        </div>
+      </div>
+      <div class="hidden md:flex md:col-span-2 md:items-center text-sm text-slate-600">${p.category}</div>
+      <div class="hidden md:flex md:col-span-2 md:items-center"><span class="px-2.5 py-1 ${statusBadge(p.status)} text-xs font-semibold rounded-full">${p.status}</span></div>
+      <div class="hidden md:flex md:col-span-2 md:items-center text-sm text-slate-500">${formatDate(p.updated_at || p.updated)}</div>
+      <div class="hidden md:flex md:col-span-1 md:items-center md:justify-center md:gap-1 admin-only">
+        <button onclick="event.stopPropagation();openEditPolicyModal(${p.id})" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+          <span class="material-symbols-outlined text-sm">edit</span>
+        </button>
+        <button onclick="event.stopPropagation();deleteItem('policies',${p.id})" class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+          <span class="material-symbols-outlined text-sm">delete</span>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderReports() {
+  const el = document.getElementById('reports-grid');
+  if (!el) return;
+  
+  if (reports.length === 0) {
+    el.innerHTML = '<div class="col-span-full text-center py-16"><span class="material-symbols-outlined text-5xl text-slate-300">assessment</span><p class="text-slate-400 mt-3">No reports yet</p></div>';
+    return;
+  }
+  
+  el.innerHTML = reports.map(r => `
+    <div onclick="openReportModal(${r.id})" class="card-hover bg-white rounded-2xl p-6 border border-slate-200/50 shadow-card cursor-pointer">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-11 h-11 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center">
+          <span class="material-symbols-outlined">${r.icon || 'assessment'}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 ${statusBadge(r.status)} text-xs font-semibold rounded-full">${r.status}</span>
+          <div class="admin-only flex items-center gap-1">
+            <button onclick="event.stopPropagation();openEditReportModal(${r.id})" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+              <span class="material-symbols-outlined text-sm">edit</span>
+            </button>
+            <button onclick="event.stopPropagation();deleteItem('reports',${r.id})" class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+              <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <h4 class="font-semibold text-slate-900 mb-1">${r.title}</h4>
+      <p class="text-sm text-slate-500 mb-3 line-clamp-2">${r.subtitle || ''}</p>
+      <div class="text-xs text-slate-400 flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">calendar_today</span>
+        ${r.date || 'No date'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderVapt() {
+  const el = document.getElementById('vapt-grid');
+  if (!el) return;
+  
+  if (vaptReports.length === 0) {
+    el.innerHTML = '<div class="col-span-full text-center py-16"><span class="material-symbols-outlined text-5xl text-slate-300">security</span><p class="text-slate-400 mt-3">No VAPT reports yet</p></div>';
+    return;
+  }
+  
+  el.innerHTML = vaptReports.map(v => `
+    <div class="card-hover bg-white rounded-2xl border border-slate-200/50 shadow-card overflow-hidden cursor-pointer">
+      <div onclick="openVaptModal(${v.id})" class="bg-gradient-to-r from-blue-600 to-purple-600 p-5 text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+        <div class="relative">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono opacity-70">${v.report_id || 'N/A'}</span>
+            <span class="px-2 py-0.5 bg-white/20 backdrop-blur text-xs font-semibold rounded-full">${v.status}</span>
+          </div>
+          <h3 class="font-bold text-lg">${v.title}</h3>
+          <p class="text-sm text-white/70">${v.subtitle || ''}</p>
+        </div>
+      </div>
+      <div class="p-5">
+        <p class="text-sm text-slate-600 mb-4 line-clamp-2">${v.description || ''}</p>
+        <div class="flex items-center justify-between">
+          <div class="flex gap-2">
+            ${(v.findings_critical || 0) > 0 ? `<span class="px-2.5 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-lg">${v.findings_critical}C</span>` : ''}
+            ${(v.findings_high || 0) > 0 ? `<span class="px-2.5 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-lg">${v.findings_high}H</span>` : ''}
+            ${(v.findings_medium || 0) > 0 ? `<span class="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-lg">${v.findings_medium}M</span>` : ''}
+            ${(v.findings_low || 0) > 0 ? `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg">${v.findings_low}L</span>` : ''}
+          </div>
+          <div class="admin-only flex items-center gap-1">
+            <button onclick="event.stopPropagation();openEditVaptModal(${v.id})" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+              <span class="material-symbols-outlined text-sm">edit</span>
+            </button>
+            <button onclick="event.stopPropagation();deleteItem('vapt',${v.id})" class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+              <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCerts() {
+  const el = document.getElementById('certs-grid');
+  if (!el) return;
+  
+  if (certificates.length === 0) {
+    el.innerHTML = '<div class="col-span-full text-center py-16"><span class="material-symbols-outlined text-5xl text-slate-300">verified</span><p class="text-slate-400 mt-3">No certificates yet</p></div>';
+    return;
+  }
+  
+  el.innerHTML = certificates.map(c => {
+    const { bg, badge } = certBg(c.color, c.status);
+    return `
+      <div class="card-hover bg-white rounded-2xl p-5 border ${c.status === 'Expired' ? 'border-l-4 border-l-red-500 border-slate-200' : 'border-slate-200'} shadow-card text-center relative">
+        ${c.status === 'Expired' ? '<div class="absolute top-3 left-3 flex items-center gap-1 bg-red-50 border border-red-200 rounded-lg px-2 py-1"><span class="material-symbols-outlined text-red-500 text-sm">warning</span><span class="text-red-600 text-[10px] font-bold uppercase tracking-wide">Expired</span></div>' : ''}
+        <div class="absolute top-3 right-3 admin-only flex items-center gap-1">
+          <button onclick="event.stopPropagation();openEditCertModal(${c.id})" class="p-1.5 bg-slate-100 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+            <span class="material-symbols-outlined text-sm">edit</span>
+          </button>
+          <button onclick="event.stopPropagation();deleteItem('certificates',${c.id})" class="p-1.5 bg-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+            <span class="material-symbols-outlined text-sm">delete</span>
+          </button>
+        </div>
+        <div onclick="openCertModal(${c.id})" class="cursor-pointer pt-2">
+          <div class="w-16 h-16 rounded-full ${bg} flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <span class="material-symbols-outlined text-2xl">${c.icon || 'verified'}</span>
+          </div>
+          <div class="font-bold text-slate-900 mb-1">${c.name}</div>
+          <div class="text-xs text-slate-500 mb-3 line-clamp-2">${c.full_name || ''}</div>
+          <span class="px-3 py-1 ${badge} text-xs font-semibold rounded-full">${c.status}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderRisks() {
+  const el = document.getElementById('risk-table');
+  if (!el) return;
+  
+  if (risks.length === 0) {
+    el.innerHTML = '<div class="px-6 py-16 text-center"><span class="material-symbols-outlined text-5xl text-slate-300">warning</span><p class="text-slate-400 mt-3">No risks registered</p></div>';
+    return;
+  }
+  
+  el.innerHTML = risks.map((r, i) => `
+    <div class="table-row-hover md:grid md:grid-cols-12 md:gap-4 md:px-6 md:py-4 cursor-pointer ${i < risks.length - 1 ? 'border-b border-slate-100' : ''}">
+      <div class="md:col-span-3 flex items-start gap-3 px-4 py-3 md:px-0 md:py-0">
+        <div class="flex-1 min-w-0">
+          <div class="font-medium text-sm text-slate-900">${r.title}</div>
+          <div class="md:hidden flex flex-wrap items-center gap-2 mt-2">
+            <span class="px-2 py-0.5 ${sevBadge(r.severity)} text-[10px] font-semibold rounded-full">${r.severity}</span>
+            <span class="px-2 py-0.5 ${statusBadge(r.status)} text-[10px] font-semibold rounded-full">${r.status}</span>
+          </div>
+          <div class="md:hidden flex items-center gap-1 mt-1.5 text-[10px] text-slate-400">
+            <span>${r.category || '—'}</span>
+            <span>•</span>
+            <span>${r.owner || '—'}</span>
+          </div>
+        </div>
+      </div>
+      <div class="hidden md:flex md:col-span-2 md:items-center text-sm text-slate-600">${r.category || '—'}</div>
+      <div class="hidden md:flex md:col-span-2 md:items-center"><span class="px-2.5 py-1 ${sevBadge(r.severity)} text-xs font-semibold rounded-full">${r.severity}</span></div>
+      <div class="hidden md:flex md:col-span-2 md:items-center text-sm text-slate-600">${r.owner || '—'}</div>
+      <div class="hidden md:flex md:col-span-2 md:items-center"><span class="px-2.5 py-1 ${statusBadge(r.status)} text-xs font-semibold rounded-full">${r.status}</span></div>
+      <div class="hidden md:flex md:col-span-1 md:items-center md:justify-center md:gap-1 admin-only">
+        <button onclick="event.stopPropagation();openEditRiskModal(${r.id})" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+          <span class="material-symbols-outlined text-sm">edit</span>
+        </button>
+        <button onclick="event.stopPropagation();deleteItem('risks',${r.id})" class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+          <span class="material-symbols-outlined text-sm">delete</span>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderActivity() {
+  const el = document.getElementById('activity-table');
+  if (!el) return;
+  
+  if (activities.length === 0) {
+    el.innerHTML = '<div class="px-6 py-16 text-center"><span class="material-symbols-outlined text-5xl text-slate-300">history</span><p class="text-slate-400 mt-3">No activity recorded</p></div>';
+    return;
+  }
+  
+  const icons = {
+    created: { icon: 'add_circle', color: 'text-emerald-500 bg-emerald-50' },
+    updated: { icon: 'edit', color: 'text-blue-500 bg-blue-50' },
+    deleted: { icon: 'delete', color: 'text-red-100 bg-red-50' },
+    login: { icon: 'login', color: 'text-purple-500 bg-purple-50' },
+    logout: { icon: 'logout', color: 'text-slate-400 bg-slate-100' },
+    upload: { icon: 'upload_file', color: 'text-cyan-500 bg-cyan-50' }
+  };
+  
+  el.innerHTML = activities.map(a => {
+    const { icon, color } = icons[a.type] || icons.updated;
+    return `
+      <div class="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors">
+        <div class="w-10 h-10 rounded-xl ${color} flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined">${icon}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="font-medium text-sm text-slate-900">${a.title}</div>
+          <div class="text-xs text-slate-500">${a.description || ''}</div>
+        </div>
+        <div class="text-right flex-shrink-0">
+          <div class="text-sm font-medium text-slate-900">${a.user_email || 'System'}</div>
+          <div class="text-xs text-slate-400">${timeAgo(a.created_at)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAll() {
+  loadDashboard();
+  renderPolicyTable();
+  renderReports();
+  renderVapt();
+  renderCerts();
+  renderRisks();
+  renderActivity();
+}
+
+// ─────────────────────────────────────────────────────────────
+// Modals & Navigation
+// ─────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function navigate(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
+  closeSearch();
+  window.scrollTo(0, 0);
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.remove('-translate-x-full');
+  document.getElementById('sidebar-overlay').classList.remove('hidden');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.add('-translate-x-full');
+  document.getElementById('sidebar-overlay').classList.add('hidden');
+}
+
+document.querySelectorAll('.nav-link').forEach(l => {
+  l.addEventListener('click', e => {
+    e.preventDefault();
+    navigate(l.dataset.page);
+    closeSidebar();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// Detail Modals
+// ─────────────────────────────────────────────────────────────
+function openPolicyModal(id) {
+  const p = policies.find(x => x.id === id);
+  if (!p) return;
+  currentItem = { collection: 'policies', id: p.id, folder: 'policies' };
+  document.getElementById('pm-title').textContent = p.name;
+  document.getElementById('pm-meta').textContent = formatDate(p.updated_at || p.updated);
+  document.getElementById('pm-desc').textContent = p.description || '';
+  const statusEl = document.getElementById('pm-status');
+  statusEl.textContent = p.status;
+  statusEl.className = `inline-block px-3 py-1 text-xs font-semibold rounded-full mb-4 ${statusBadge(p.status)}`;
+  const dl = document.getElementById('pm-download');
+  dl.href = p.pdf_url ? `/uploads/${p.pdf_url}` : '#';
+  dl.setAttribute('download', p.pdf_url ? p.pdf_url.split('/').pop() : '');
+  openModal('policy-modal');
+}
+
+function openReportModal(id) {
+  const r = reports.find(x => x.id === id);
+  if (!r) return;
+  currentItem = { collection: 'reports', id: r.id, folder: 'reports' };
+  document.getElementById('rm-title').textContent = r.title;
+  document.getElementById('rm-sub').textContent = r.subtitle || '';
+  document.getElementById('rm-desc').textContent = r.description || '';
+  const dl = document.getElementById('rm-download');
+  dl.href = r.pdf_url ? `/uploads/${r.pdf_url}` : '#';
+  dl.setAttribute('download', r.pdf_url ? r.pdf_url.split('/').pop() : '');
+  openModal('report-modal');
+}
+
+function openVaptModal(id) {
+  const v = vaptReports.find(x => x.id === id);
+  if (!v) return;
+  currentItem = { collection: 'vapt', id: v.id, folder: 'vapt' };
+  document.getElementById('vm-title').textContent = v.title;
+  document.getElementById('vm-sub').textContent = `${v.report_id} · ${v.date}`;
+  document.getElementById('vm-desc').textContent = v.description || '';
+  document.getElementById('vm-findings').innerHTML = `
+    <div class="text-center p-2 rounded-lg bg-red-100"><div class="text-lg font-bold text-red-700">${v.findings_critical || 0}</div><div class="text-xs text-red-600">Critical</div></div>
+    <div class="text-center p-2 rounded-lg bg-orange-100"><div class="text-lg font-bold text-orange-700">${v.findings_high || 0}</div><div class="text-xs text-orange-600">High</div></div>
+    <div class="text-center p-2 rounded-lg bg-amber-100"><div class="text-lg font-bold text-amber-700">${v.findings_medium || 0}</div><div class="text-xs text-amber-600">Medium</div></div>
+    <div class="text-center p-2 rounded-lg bg-surface-100"><div class="text-lg font-bold text-surface-600">${v.findings_low || 0}</div><div class="text-xs text-surface-500">Low</div></div>
+  `;
+  const dl = document.getElementById('vm-download');
+  dl.href = v.pdf_url ? `/uploads/${v.pdf_url}` : '#';
+  dl.setAttribute('download', v.pdf_url ? v.pdf_url.split('/').pop() : '');
+  openModal('vapt-modal');
+}
+
+function openCertModal(id) {
+  const c = certificates.find(x => x.id === id);
+  if (!c) return;
+  const folder = c.pdf_url ? c.pdf_url.split('/')[0] : 'certificates';
+  currentItem = { collection: 'certificates', id: c.id, folder };
+  const { bg, badge } = certBg(c.color, c.status);
+  
+  // Show/hide warning for expired certificates
+  const warningBar = document.getElementById('cert-warning-bar');
+  const modalBox = document.getElementById('cert-modal-box');
+  if (c.status === 'Expired') {
+    warningBar.classList.remove('hidden');
+    modalBox.classList.remove('border-emerald-500');
+    modalBox.classList.add('border-red-500');
+  } else {
+    warningBar.classList.add('hidden');
+    modalBox.classList.add('border-emerald-500');
+    modalBox.classList.remove('border-red-500');
+  }
+  
+  document.getElementById('cm-icon').className = `w-12 h-12 rounded-xl ${bg} flex items-center justify-center`;
+  document.getElementById('cm-icon').innerHTML = `<span class="material-symbols-outlined">${c.icon || 'verified'}</span>`;
+  document.getElementById('cm-name').textContent = c.name;
+  document.getElementById('cm-full').textContent = c.full_name || '';
+  const statusEl = document.getElementById('cm-status');
+  statusEl.textContent = c.status;
+  statusEl.className = `inline-block px-3 py-1 text-xs font-semibold rounded-full mb-4 ${badge}`;
+  document.getElementById('cm-issued').textContent = c.issued_date || '—';
+  document.getElementById('cm-expiry').textContent = c.expiry_date || '—';
+  document.getElementById('cm-body').textContent = c.cert_body || '—';
+  const dl = document.getElementById('cm-download');
+  dl.href = c.pdf_url ? `/uploads/${c.pdf_url}` : '#';
+  dl.setAttribute('download', c.pdf_url ? c.pdf_url.split('/').pop() : '');
+  openModal('cert-modal');
+}
+
+function openPdfPreview(prefix) {
+  const dlEl = document.getElementById(prefix + '-download');
+  const url = dlEl ? dlEl.getAttribute('href') : '';
+  if (!url || url === '#') { showToast('No PDF available'); return; }
+  const titleEl = document.getElementById(
+    prefix === 'pm' ? 'pm-title' :
+    prefix === 'rm' ? 'rm-title' :
+    prefix === 'vm' ? 'vm-title' : 'cm-name'
+  );
+  document.getElementById('preview-title').textContent = titleEl?.textContent || 'Preview';
+  document.getElementById('preview-frame').src = url;
+  document.getElementById('preview-download').href = url;
+  openModal('pdf-preview-modal');
+}
+
+// ─────────────────────────────────────────────────────────────
+// CRUD Operations
+// ─────────────────────────────────────────────────────────────
+async function deleteItem(collection, id) {
+  const items = { policies, reports, vapt: vaptReports, certificates, risks };
+  const item = items[collection]?.find(x => x.id === id);
+  if (!item) return;
+  if (!confirm(`Delete "${item.name || item.title}"?\nThis cannot be undone.`)) return;
+  await fetch(`/api/${collection}/${id}`, { method: 'DELETE' });
+  await loadData();
+  showToast('Item deleted');
+}
+
+async function replacePdf() {
+  if (!currentItem) return;
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.pdf';
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const pdfFile = await uploadFile(input, currentItem.folder);
+    const updates = { pdf_url: pdfFile };
+    if (currentItem.collection === 'policies') updates.updated_at = new Date().toISOString();
+    else if (currentItem.collection === 'reports') updates.updated_at = new Date().toISOString();
+    else if (currentItem.collection === 'vapt') updates.updated_at = new Date().toISOString();
+    else if (currentItem.collection === 'certificates') updates.updated_at = new Date().toISOString();
+    await fetch(`/api/${currentItem.collection}/${currentItem.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates)
+    });
+    await loadData();
+    showToast('PDF updated');
+  };
+  input.click();
+}
+
+function openEditPolicyModal(id) {
+  const p = policies.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('edit-policy-id').value = id;
+  document.getElementById('edit-policy-name').value = p.name;
+  document.getElementById('edit-policy-cat').value = p.category;
+  document.getElementById('edit-policy-status').value = p.status;
+  document.getElementById('edit-policy-desc').value = p.description || '';
+  document.getElementById('edit-policy-desc-count').textContent = (p.description || '').length + ' / 500';
+  document.getElementById('edit-policy-file').value = '';
+  openModal('edit-policy-modal');
+}
+
+async function saveEditPolicy() {
+  const id = parseInt(document.getElementById('edit-policy-id').value);
+  const name = document.getElementById('edit-policy-name').value.trim();
+  const category = document.getElementById('edit-policy-cat').value;
+  const status = document.getElementById('edit-policy-status').value;
+  const description = document.getElementById('edit-policy-desc').value.trim();
+  const file = document.getElementById('edit-policy-file');
+  
+  if (!name || !description) { showToast('Name and description required'); return; }
+  
+  const updates = { name, category, status, description, updated_at: new Date().toISOString() };
+  
+  if (file.files[0]) {
+    updates.pdf_url = await uploadFile(file, 'policies');
+  }
+  
+  await fetch(`/api/policies/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates)
+  });
+  
+  await loadData();
+  closeModal('edit-policy-modal');
+  showToast('Policy updated');
+}
+
+async function addNewPolicy() {
+  const name = document.getElementById('new-policy-name').value.trim();
+  const desc = document.getElementById('new-policy-desc').value.trim();
+  const cat = document.getElementById('new-policy-cat').value;
+  const file = document.getElementById('new-policy-file');
+  if (!name || !desc) { showToast('Name and description required'); return; }
+  const pdf_url = await uploadFile(file, 'policies');
+  await fetch('/api/policies', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, description: desc, category: cat, status: 'Published', icon: 'description', pdf_url })
+  });
+  await loadData();
+  closeModal('new-policy-modal');
+  showToast('Policy created');
+}
+
+function openEditReportModal(id) {
+  const r = reports.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('edit-report-id').value = id;
+  document.getElementById('edit-report-title').value = r.title;
+  document.getElementById('edit-report-subtitle').value = r.subtitle || '';
+  document.getElementById('edit-report-desc').value = r.description || '';
+  document.getElementById('edit-report-status').value = r.status;
+  document.getElementById('edit-report-file').value = '';
+  openModal('edit-report-modal');
+}
+
+async function saveEditReport() {
+  const id = parseInt(document.getElementById('edit-report-id').value);
+  const title = document.getElementById('edit-report-title').value.trim();
+  const subtitle = document.getElementById('edit-report-subtitle').value.trim();
+  const description = document.getElementById('edit-report-desc').value.trim();
+  const status = document.getElementById('edit-report-status').value;
+  const file = document.getElementById('edit-report-file');
+  
+  if (!title) { showToast('Title required'); return; }
+  
+  const updates = { title, subtitle, description, status, updated_at: new Date().toISOString() };
+  
+  if (file.files[0]) {
+    updates.pdf_url = await uploadFile(file, 'reports');
+  }
+  
+  await fetch(`/api/reports/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates)
+  });
+  
+  await loadData();
+  closeModal('edit-report-modal');
+  showToast('Report updated');
+}
+
+function openEditVaptModal(id) {
+  const v = vaptReports.find(x => x.id === id);
+  if (!v) return;
+  document.getElementById('edit-vapt-id').value = id;
+  document.getElementById('edit-vapt-title').value = v.title;
+  document.getElementById('edit-vapt-subtitle').value = v.subtitle || '';
+  document.getElementById('edit-vapt-reportid').value = v.report_id || '';
+  document.getElementById('edit-vapt-desc').value = v.description || '';
+  document.getElementById('edit-vapt-critical').value = v.findings_critical || 0;
+  document.getElementById('edit-vapt-high').value = v.findings_high || 0;
+  document.getElementById('edit-vapt-medium').value = v.findings_medium || 0;
+  document.getElementById('edit-vapt-low').value = v.findings_low || 0;
+  document.getElementById('edit-vapt-file').value = '';
+  openModal('edit-vapt-modal');
+}
+
+async function saveEditVapt() {
+  const id = parseInt(document.getElementById('edit-vapt-id').value);
+  const title = document.getElementById('edit-vapt-title').value.trim();
+  const subtitle = document.getElementById('edit-vapt-subtitle').value.trim();
+  const report_id = document.getElementById('edit-vapt-reportid').value.trim();
+  const description = document.getElementById('edit-vapt-desc').value.trim();
+  const findings_critical = parseInt(document.getElementById('edit-vapt-critical').value) || 0;
+  const findings_high = parseInt(document.getElementById('edit-vapt-high').value) || 0;
+  const findings_medium = parseInt(document.getElementById('edit-vapt-medium').value) || 0;
+  const findings_low = parseInt(document.getElementById('edit-vapt-low').value) || 0;
+  const file = document.getElementById('edit-vapt-file');
+  
+  if (!title) { showToast('Title required'); return; }
+  
+  const updates = { title, subtitle, report_id, description, findings_critical, findings_high, findings_medium, findings_low, updated_at: new Date().toISOString() };
+  
+  if (file.files[0]) {
+    updates.pdf_url = await uploadFile(file, 'vapt');
+  }
+  
+  await fetch(`/api/vapt/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates)
+  });
+  
+  await loadData();
+  closeModal('edit-vapt-modal');
+  showToast('VAPT report updated');
+}
+
+async function addNewReport() {
+  const title = document.getElementById('nr-title').value.trim();
+  const subtitle = document.getElementById('nr-subtitle').value.trim();
+  const desc = document.getElementById('nr-desc').value.trim();
+  const pdf_url = await uploadFile(document.getElementById('nr-file'), 'reports');
+  if (!title) { showToast('Title required'); return; }
+  await fetch('/api/reports', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, subtitle, description: desc, status: 'Complete', date: todayMonthYear(), icon: 'assessment', pdf_url })
+  });
+  await loadData();
+  closeModal('new-report-modal');
+  showToast('Report added');
+}
+
+async function addNewVapt() {
+  const title = document.getElementById('nv-title').value.trim();
+  const subtitle = document.getElementById('nv-subtitle').value.trim();
+  const report_id = document.getElementById('nv-reportid').value.trim();
+  const desc = document.getElementById('nv-desc').value.trim();
+  const pdf_url = await uploadFile(document.getElementById('nv-file'), 'vapt');
+  if (!title) { showToast('Title required'); return; }
+  await fetch('/api/vapt', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, subtitle, report_id, description: desc, status: 'Complete', date: todayStr(), pdf_url, findings_critical: 0, findings_high: 0, findings_medium: 0, findings_low: 0 })
+  });
+  await loadData();
+  closeModal('new-vapt-modal');
+  showToast('VAPT report added');
+}
+
+async function addNewCert() {
+  const name = document.getElementById('nc-name').value.trim();
+  const full_name = document.getElementById('nc-fullname').value.trim();
+  const status = document.getElementById('nc-status').value;
+  const issued_date = document.getElementById('nc-issued').value.trim();
+  const expiry_date = document.getElementById('nc-expiry').value.trim();
+  const cert_body = document.getElementById('nc-body').value.trim();
+  const pdf_url = await uploadFile(document.getElementById('nc-file'), 'certificates');
+  if (!name) { showToast('Name required'); return; }
+  await fetch('/api/certificates', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, full_name, status, issued_date, expiry_date, cert_body, pdf_url, icon: 'verified', color: 'green' })
+  });
+  await loadData();
+  closeModal('new-cert-modal');
+  showToast('Certificate added');
+}
+
+async function addNewRisk() {
+  const title = document.getElementById('nrisk-title').value.trim();
+  const category = document.getElementById('nrisk-cat').value;
+  const severity = document.getElementById('nrisk-sev').value;
+  const owner = document.getElementById('nrisk-owner').value.trim();
+  const description = document.getElementById('nrisk-desc').value.trim();
+  if (!title) { showToast('Title required'); return; }
+  await fetch('/api/risks', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, category, severity, owner, description, status: 'Open' })
+  });
+  await loadData();
+  closeModal('new-risk-modal');
+  showToast('Risk added');
+}
+
+function openEditCertModal(id) {
+  const c = certificates.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('edit-cert-id').value = id;
+  document.getElementById('edit-cert-name').value = c.name;
+  document.getElementById('edit-cert-fullname').value = c.full_name || '';
+  document.getElementById('edit-cert-status').value = c.status;
+  document.getElementById('edit-cert-issued').value = c.issued_date || '';
+  document.getElementById('edit-cert-expiry').value = c.expiry_date || '';
+  document.getElementById('edit-cert-body').value = c.cert_body || '';
+  openModal('edit-cert-modal');
+}
+
+async function saveEditCert() {
+  const id = parseInt(document.getElementById('edit-cert-id').value);
+  const name = document.getElementById('edit-cert-name').value.trim();
+  const full_name = document.getElementById('edit-cert-fullname').value.trim();
+  const status = document.getElementById('edit-cert-status').value;
+  const issued_date = document.getElementById('edit-cert-issued').value.trim();
+  const expiry_date = document.getElementById('edit-cert-expiry').value.trim();
+  const cert_body = document.getElementById('edit-cert-body').value.trim();
+  if (!name) { showToast('Name required'); return; }
+  await fetch(`/api/certificates/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, full_name, status, issued_date, expiry_date, cert_body })
+  });
+  await loadData();
+  closeModal('edit-cert-modal');
+  showToast('Certificate updated');
+}
+
+function openEditRiskModal(id) {
+  const r = risks.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('edit-risk-id').value = id;
+  document.getElementById('edit-risk-title').value = r.title;
+  document.getElementById('edit-risk-cat').value = r.category;
+  document.getElementById('edit-risk-sev').value = r.severity;
+  document.getElementById('edit-risk-owner').value = r.owner || '';
+  document.getElementById('edit-risk-status').value = r.status;
+  document.getElementById('edit-risk-desc').value = r.description || '';
+  openModal('edit-risk-modal');
+}
+
+async function saveEditRisk() {
+  const id = parseInt(document.getElementById('edit-risk-id').value);
+  const title = document.getElementById('edit-risk-title').value.trim();
+  const category = document.getElementById('edit-risk-cat').value;
+  const severity = document.getElementById('edit-risk-sev').value;
+  const owner = document.getElementById('edit-risk-owner').value.trim();
+  const status = document.getElementById('edit-risk-status').value;
+  const description = document.getElementById('edit-risk-desc').value.trim();
+  if (!title) { showToast('Title required'); return; }
+  await fetch(`/api/risks/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, category, severity, owner, status, description })
+  });
+  await loadData();
+  closeModal('edit-risk-modal');
+  showToast('Risk updated');
+}
+
+// ─────────────────────────────────────────────────────────────
+// Search
+// ─────────────────────────────────────────────────────────────
+const searchInput = document.getElementById('search-input');
+const searchDD = document.getElementById('search-dropdown');
+
+function renderSearch(q) {
+  if (!q) {
+    searchDD.classList.add('hidden');
+    return;
+  }
+  const ql = q.toLowerCase();
+  const results = [
+    ...policies.filter(p => p.name.toLowerCase().includes(ql)).slice(0, 3).map(p => ({ type: 'Policy', name: p.name, page: 'policies' })),
+    ...reports.filter(r => r.title.toLowerCase().includes(ql)).slice(0, 3).map(r => ({ type: 'Report', name: r.title, page: 'reports' })),
+    ...vaptReports.filter(v => v.title.toLowerCase().includes(ql)).slice(0, 3).map(v => ({ type: 'VAPT', name: v.title, page: 'vapt' })),
+    ...certificates.filter(c => c.name.toLowerCase().includes(ql)).slice(0, 3).map(c => ({ type: 'Certificate', name: c.name, page: 'certificates' })),
+  ];
+  
+  document.getElementById('search-results').innerHTML = results.length ? results.map(r => `
+    <div class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 cursor-pointer transition-colors" onclick="navigate('${r.page}');closeSearch()">
+      <span class="text-xs font-medium text-slate-400 w-20">${r.type}</span>
+      <span class="text-sm text-slate-900">${r.name}</span>
+    </div>
+  `).join('') : '<div class="px-4 py-6 text-center text-slate-400 text-sm">No results found</div>';
+  
+  searchDD.classList.remove('hidden');
+}
+
+searchInput.addEventListener('input', () => renderSearch(searchInput.value));
+searchInput.addEventListener('focus', () => renderSearch(searchInput.value));
+document.addEventListener('click', e => {
+  if (!searchInput.contains(e.target) && !searchDD.contains(e.target)) closeSearch();
+});
+function closeSearch() { searchDD.classList.add('hidden'); }
+
+// ─────────────────────────────────────────────────────────────
+// Filter Chips
+// ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    renderPolicyTable(chip.dataset.filter);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// Toast
+// ─────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = 'success') {
+  clearTimeout(toastTimer);
+  const icon = document.getElementById('toast-icon');
+  const icons = {
+    success: 'check_circle',
+    error: 'error',
+    warning: 'warning',
+    info: 'info'
+  };
+  icon.textContent = icons[type] || icons.success;
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast').classList.add('show');
+  toastTimer = setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+}
+
+// ─────────────────────────────────────────────────────────────
+// Auth
+// ─────────────────────────────────────────────────────────────
+function setAdminUI(isAdmin, user = null) {
+  currentUser = user;
+  document.getElementById('sidebar-logged-in').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('sidebar-logged-out').style.display = isAdmin ? 'none' : 'flex';
+  document.querySelectorAll('.admin-only').forEach(el => {
+    if (isAdmin) {
+      el.classList.remove('hidden');
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  });
+  document.querySelectorAll('.login-btn').forEach(el => {
+    el.style.display = isAdmin ? 'none' : '';
+  });
+  if (user) {
+    document.getElementById('user-name').textContent = user.name || user.email;
+    document.getElementById('user-avatar').textContent = (user.name || user.email).charAt(0).toUpperCase();
+  }
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pass').value;
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setAdminUI(true, data.user);
+      closeModal('login-modal');
+      document.getElementById('login-pass').value = '';
+      showToast(`Welcome, ${data.user.name || data.user.email}`);
+    } else {
+      document.getElementById('login-error').classList.remove('hidden');
+    }
+  } catch {
+    document.getElementById('login-error').classList.remove('hidden');
+  }
+}
+
+async function doLogout() {
+  await fetch('/api/logout', { method: 'POST' });
+  setAdminUI(false);
+  showToast('Signed out');
+}
+
+// ─────────────────────────────────────────────────────────────
+// SSE Real-time Updates
+// ─────────────────────────────────────────────────────────────
+function connectSSE() {
+  const es = new EventSource('/api/events');
+  es.addEventListener('change', async (e) => {
+    const { action, collection, item, id } = JSON.parse(e.data);
+    const map = { policies: 'policies', reports: 'reports', vapt: 'vaptReports', certificates: 'certificates', risks: 'risks' };
+    const arrName = map[collection];
+    if (!arrName) return;
+    
+    if (action === 'added') {
+      if (!eval(arrName).find(x => x.id === item.id)) eval(arrName).unshift(item);
+    } else if (action === 'updated') {
+      const idx = eval(arrName).findIndex(x => x.id === item.id);
+      if (idx !== -1) eval(arrName)[idx] = item; else eval(arrName).unshift(item);
+    } else if (action === 'deleted') {
+      const idx = eval(arrName).findIndex(x => x.id === id);
+      if (idx !== -1) eval(arrName).splice(idx, 1);
+    }
+    
+    renderAll();
+    showToast(`${item?.name || item?.title || 'Item'} ${action}`);
+  });
+  es.onerror = () => { es.close(); setTimeout(connectSSE, 5000); };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────
+function animateCount(el, target) {
+  if (!el) return;
+  const start = parseInt(el.textContent) || 0;
+  const duration = 1000;
+  const startTime = performance.now();
+  
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeOut = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * easeOut);
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ─────────────────────────────────────────────────────────────
+// Boot
+// ─────────────────────────────────────────────────────────────
+async function init() {
+  await loadData();
+  const meRes = await fetch('/api/me');
+  const me = await meRes.json();
+  setAdminUI(me.isAdmin, me.user);
+  connectSSE();
+}
+
+init();
+</script>
+</body>
+</html>

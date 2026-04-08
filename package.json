@@ -1,0 +1,22 @@
+{
+  "name": "grc-command-center",
+  "version": "2.0.0",
+  "description": "GRC Command Center - Enterprise Governance, Risk & Compliance Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:seed": "node database/seed.js",
+    "db:reset": "node database/reset.js"
+  },
+  "dependencies": {
+    "@azure/msal-node": "^5.1.2",
+    "bcryptjs": "^2.4.3",
+    "passport": "^0.7.0",
+    "passport-oauth2": "^1.8.0",
+    "sql.js": "^1.10.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
